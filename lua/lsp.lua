@@ -78,15 +78,15 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-local servers = { 'tsserver', 'gopls', 'emmet_ls', 'dartls', 'html' }
+local servers = { 'tsserver', 'gopls', 'emmet_ls', 'dartls', 'html', 'sqls' }
 for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-    flags = {
-      debounce_text_changes = 150,
-    }
-  }
+	nvim_lsp[lsp].setup {
+	 on_attach = on_attach,
+	 capabilities = capabilities,
+	 flags = {
+		debounce_text_changes = 150,
+	 }
+	}
 end
 
 -- Set completeopt to have a better completion experience
