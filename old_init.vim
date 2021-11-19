@@ -66,6 +66,7 @@ Plug 'rafaelsq/nvim-goc.lua'
 Plug 'folke/lsp-colors.nvim'
 
 Plug 'akinsho/flutter-tools.nvim'
+Plug 'lukas-reineke/indent-blankline.nvim'
 call plug#end()
 
 let g:ale_fixers = {
@@ -76,7 +77,9 @@ let g:ale_fixers = {
 \   'vue': ['prettier', 'eslint'],
 \}
 
-let g:ale_linters = {}
+let g:ale_linters = {
+	\'go': ['gopls'],
+\}
 let g:ale_linters.typescript = ['eslint', 'tsserver']
 let g:ale_linters.javascript = ['eslint', 'tsserver']
 
@@ -210,3 +213,6 @@ endfunction
 
 set statusline=
 set statusline+=%{LspStatus()}
+
+nnoremap <C-o> <C-o>zz
+nnoremap <C-i> <C-i>zz

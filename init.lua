@@ -1,8 +1,5 @@
 vim.cmd('source ~/.config/nvim/old_init.vim')
 
-
-
-
 require'nvim-treesitter.configs'.setup {
   autotag = {
     enable = true,
@@ -21,3 +18,4 @@ require("lsp-colors").setup({
   Information = "#0db9d7",
   Hint = "#10B981"
 })
+require('indent_blank_line_own')
