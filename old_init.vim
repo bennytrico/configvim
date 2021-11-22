@@ -12,7 +12,6 @@ set guitablabel=%t
 "set relativenumber
 "set list listchars=tab:\|\-
 
-
 call plug#begin('~/.vim/plugged')
 Plug 'mattn/emmet-vim'
 Plug 'morhetz/gruvbox'
@@ -25,18 +24,12 @@ Plug 'othree/xml.vim'
 Plug 'othree/html5.vim'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'dart-lang/dart-vim-plugin'
-"Plug 'thosakwe/vim-flutter'
 Plug 'natebosch/dartlang-snippets'
 Plug 'junegunn/seoul256.vim'
-"Plug 'vim-airline/vim-airline'
 Plug 'HerringtonDarkholme/yats.vim'
-"Plug 'vim-airline/vim-airline-themes'
-"Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'w0rp/ale'
 Plug 'tpope/vim-fugitive'
 Plug 'darrikonn/vim-gofmt', { 'do': ':GoUpdateBinaries' }
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
 Plug 'alvan/vim-closetag'
 "Plug 'NTBBloodbath/galaxyline.nvim'
 Plug 'ojroques/nvim-hardline'
@@ -48,7 +41,6 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'vim-test/vim-test'
 Plug 'darrikonn/vim-gofmt', { 'do': ':GoUpdateBinaries' }
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 
 " nvim lsp
 Plug 'neovim/nvim-lspconfig'
@@ -67,6 +59,9 @@ Plug 'folke/lsp-colors.nvim'
 
 Plug 'akinsho/flutter-tools.nvim'
 Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'onsails/lspkind-nvim'
+
+Plug 'rafamadriz/neon'
 call plug#end()
 
 let g:ale_fixers = {
@@ -99,7 +94,6 @@ autocmd BufWritePre *.go lua goimports(1000)
 "let g:go_fmt_command = "gofmt"
 let g:go_fmt_autosave = 1
 
-inoremap jk <ESC>
 nmap <C-n> :CHADopen<CR>
 vmap ++ <plug>NERDCommenterToggle
 nmap ++ <plug>NERDCommenterToggle
@@ -132,7 +126,7 @@ endfunction
 
 noremap <leader>y "*y
 noremap <leader>p "*p
-map <C-f>  :Ag<CR>
+map <C-f> <cmd>Telescope live_grep<cr>
 nnoremap <C-p> <cmd>Telescope find_files<cr>
 
 " git
@@ -195,13 +189,6 @@ if has('nvim')
   tmap <C-s> <C-\><C-n>
 endif
 
-lua <<EOF
-vim.g.tokyonight_transparent = true
-
-vim.cmd[[colorscheme tokyonight]]
-EOF
-
-
 " Statusline
 function! LspStatus() abort
   if luaeval('#vim.lsp.buf_get_clients() > 0')
@@ -216,3 +203,16 @@ set statusline+=%{LspStatus()}
 
 nnoremap <C-o> <C-o>zz
 nnoremap <C-i> <C-i>zz
+
+lua <<EOF
+vim.g.neon_transparent = true
+vim.cmd[[colorscheme neon]]
+EOF
+
+set cursorline
+highlight CursorLine gui=underline cterm=underline ctermfg=None guifg=None
+augroup CursorLine
+  au!
+  au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  au WinLeave * setlocal nocursorline
+augroup END

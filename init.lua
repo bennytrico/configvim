@@ -19,3 +19,4 @@ require("lsp-colors").setup({
   Hint = "#10B981"
 })
 require('indent_blank_line_own')
+

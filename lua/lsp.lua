@@ -1,5 +1,6 @@
 local nvim_lsp = require('lspconfig')
 local lsp_status = require('lsp-status')
+local lspkind = require('lspkind')
 
 lsp_status.config({
     kind_labels = vim.g.completion_customize_lsp_label
@@ -137,6 +138,9 @@ cmp.setup {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
   },
+  formatting = {
+    format = lspkind.cmp_format({with_text = false, maxwidth = 50})
+  }
 }
 
 local cmp_autopairs = require('nvim-autopairs.completion.cmp')
