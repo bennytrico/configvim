@@ -14,10 +14,8 @@ set guitablabel=%t
 
 call plug#begin('~/.vim/plugged')
 Plug 'mattn/emmet-vim'
-Plug 'morhetz/gruvbox'
 Plug 'ryanoasis/vim-devicons'
 Plug 'airblade/vim-gitgutter'
-Plug 'scrooloose/nerdcommenter'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'posva/vim-vue'
 Plug 'othree/xml.vim'
@@ -25,7 +23,6 @@ Plug 'othree/html5.vim'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'natebosch/dartlang-snippets'
-Plug 'junegunn/seoul256.vim'
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'w0rp/ale'
 Plug 'tpope/vim-fugitive'
@@ -41,6 +38,9 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'vim-test/vim-test'
 Plug 'darrikonn/vim-gofmt', { 'do': ':GoUpdateBinaries' }
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+Plug 'JoosepAlviste/nvim-ts-context-commentstring'
+Plug 'terrortylor/nvim-comment'
 
 " nvim lsp
 Plug 'neovim/nvim-lspconfig'
@@ -62,6 +62,13 @@ Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'onsails/lspkind-nvim'
 
 Plug 'rafamadriz/neon'
+
+Plug 'ellisonleao/glow.nvim'
+Plug 'goolord/alpha-nvim'
+Plug 'weilbith/nvim-code-action-menu'
+
+"TODO
+Plug 'folke/todo-comments.nvim'
 call plug#end()
 
 let g:ale_fixers = {
@@ -85,9 +92,9 @@ let g:ale_fix_on_save = 1
 
 let g:ale_linters_explicit = 1
 
-autocmd BufWritePost *.go silent exec ":GoFmt"
+"autocmd BufWritePost *.go silent exec ":GoFmt"
 "autocmd BufWritePre *.go :silent call CocAction('runCommand', 'editor.action.organizeImport')
-autocmd BufWritePre *.go lua goimports(1000)
+"autocmd BufWritePre *.go lua goimports(1000)
 "autocmd FileType go nmap <leader><space> :GoFmt<cr>
 "autocmd FileType go nmap <leader><space> :GoFmt<cr>
 "let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
@@ -95,8 +102,8 @@ autocmd BufWritePre *.go lua goimports(1000)
 let g:go_fmt_autosave = 1
 
 nmap <C-n> :CHADopen<CR>
-vmap ++ <plug>NERDCommenterToggle
-nmap ++ <plug>NERDCommenterToggle
+"vmap ++ <plug>NERDCommenterToggle
+"nmap ++ <plug>NERDCommenterToggle
 
 let leader = exists('g:mapleader') ? g:mapleader : '\'
 
@@ -203,6 +210,9 @@ set statusline+=%{LspStatus()}
 
 nnoremap <C-o> <C-o>zz
 nnoremap <C-i> <C-i>zz
+nnoremap gd gdzz
+nnoremap gi gdzz
+nnoremap gr gdzz
 
 lua <<EOF
 vim.g.neon_transparent = true

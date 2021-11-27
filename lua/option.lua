@@ -12,3 +12,7 @@ vim.opt.relativenumber = true
 -- Dart
 vim.g.dart_style_guide = 2
 vim.g.dart_format_on_save = 1
+
+-- Markdown
+vim.g.glow_binary_path = vim.env.HOME .. "/bin"
+
