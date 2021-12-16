@@ -23,9 +23,10 @@ require('indent_blank_line_own')
 
 vim.cmd [[
   autocmd BufWritePost *.go silent exec ":GoFmt"
-
-  autocmd BufWritePre *.go lua goimports(1000)
+  autocmd BufWritePre *.go silent exec ":GoImports"
 ]]
+
+  -- autocmd BufWritePre *.go lua goimports(1000)
 require("todo-comments").setup {
     -- your configuration comes here
     -- or leave it empty to use the default settings
@@ -37,3 +38,4 @@ require("nvim_comment").setup({
 		require('ts_context_commentstring.internal').update_commentstring()
 	end
 })
+

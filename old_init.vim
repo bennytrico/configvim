@@ -36,7 +36,6 @@ Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'vim-test/vim-test'
-Plug 'darrikonn/vim-gofmt', { 'do': ':GoUpdateBinaries' }
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 Plug 'JoosepAlviste/nvim-ts-context-commentstring'
@@ -54,7 +53,8 @@ Plug 'nvim-lua/lsp-status.nvim'
 Plug 'windwp/nvim-autopairs'
 Plug 'windwp/nvim-ts-autotag'
 
-Plug 'rafaelsq/nvim-goc.lua'
+" Plug 'rafaelsq/nvim-goc.lua'
+Plug 'kyoh86/vim-go-coverage'
 Plug 'folke/lsp-colors.nvim'
 
 Plug 'akinsho/flutter-tools.nvim'
@@ -65,7 +65,6 @@ Plug 'rafamadriz/neon'
 
 Plug 'ellisonleao/glow.nvim'
 Plug 'goolord/alpha-nvim'
-Plug 'weilbith/nvim-code-action-menu'
 
 "TODO
 Plug 'folke/todo-comments.nvim'
