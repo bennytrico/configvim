@@ -44,7 +44,7 @@ Plug 'terrortylor/nvim-comment'
 
 " nvim lsp
 Plug 'neovim/nvim-lspconfig'
-Plug 'kevinhwang91/nvim-bqf'
+" Plug 'kevinhwang91/nvim-bqf'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'saadparwaiz1/cmp_luasnip'
@@ -69,6 +69,9 @@ Plug 'goolord/alpha-nvim'
 
 "TODO
 Plug 'folke/todo-comments.nvim'
+Plug 'onsails/diaglist.nvim'
+Plug 'RishabhRD/popfix'
+Plug 'RishabhRD/nvim-lsputils'
 call plug#end()
 
 let g:ale_fixers = {
@@ -79,9 +82,10 @@ let g:ale_fixers = {
 \   'vue': ['prettier', 'eslint'],
 \}
 
-let g:ale_linters = {
-\'go': ['gopls'],
-\}
+ "let g:ale_linters = {
+ "\'go': ['gopls'],
+ "\}
+ let g:ale_linters = {}
 let g:ale_linters.typescript = ['eslint', 'tsserver']
 let g:ale_linters.javascript = ['eslint', 'tsserver']
 
@@ -92,18 +96,8 @@ let g:ale_fix_on_save = 1
 
 let g:ale_linters_explicit = 1
 
-"autocmd BufWritePost *.go silent exec ":GoFmt"
-"autocmd BufWritePre *.go :silent call CocAction('runCommand', 'editor.action.organizeImport')
-"autocmd BufWritePre *.go lua goimports(1000)
-"autocmd FileType go nmap <leader><space> :GoFmt<cr>
-"autocmd FileType go nmap <leader><space> :GoFmt<cr>
-"let g:go_metalinter_enabled = ['vet', 'golint', 'errcheck']
 "let g:go_fmt_command = "gofmt"
 let g:go_fmt_autosave = 1
-
-nmap <C-n> :CHADopen<CR>
-"vmap ++ <plug>NERDCommenterToggle
-"nmap ++ <plug>NERDCommenterToggle
 
 let leader = exists('g:mapleader') ? g:mapleader : '\'
 
@@ -300,3 +294,5 @@ nmap <Tab> :tabnext<Return>
 nnoremap + <C-a>
 nnoremap - <C-x>
 set lazyredraw
+nmap <space>dw <cmd>lua require('diaglist').open_all_diagnostics()<cr>
+
