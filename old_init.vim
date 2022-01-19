@@ -28,7 +28,6 @@ Plug 'w0rp/ale'
 Plug 'tpope/vim-fugitive'
 Plug 'darrikonn/vim-gofmt', { 'do': ':GoUpdateBinaries' }
 Plug 'alvan/vim-closetag'
-"Plug 'NTBBloodbath/galaxyline.nvim'
 Plug 'ojroques/nvim-hardline'
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'kyazdani42/nvim-tree.lua'
@@ -44,7 +43,6 @@ Plug 'terrortylor/nvim-comment'
 
 " nvim lsp
 Plug 'neovim/nvim-lspconfig'
-" Plug 'kevinhwang91/nvim-bqf'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'saadparwaiz1/cmp_luasnip'
@@ -62,7 +60,9 @@ Plug 'akinsho/flutter-tools.nvim'
 Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'onsails/lspkind-nvim'
 
-Plug 'rafamadriz/neon'
+" Plug 'rafamadriz/neon'
+" Plug 'shaeinst/roshnivim-cs'
+Plug 'catppuccin/nvim', {'as': 'catppuccin'}
 
 Plug 'ellisonleao/glow.nvim'
 Plug 'goolord/alpha-nvim'
@@ -73,6 +73,7 @@ Plug 'onsails/diaglist.nvim'
 Plug 'RishabhRD/popfix'
 Plug 'RishabhRD/nvim-lsputils'
 call plug#end()
+
 
 let g:ale_fixers = {
 \   'typescript': ['prettier', 'eslint'],
@@ -85,7 +86,7 @@ let g:ale_fixers = {
  "let g:ale_linters = {
  "\'go': ['gopls'],
  "\}
- let g:ale_linters = {}
+let g:ale_linters = {}
 let g:ale_linters.typescript = ['eslint', 'tsserver']
 let g:ale_linters.javascript = ['eslint', 'tsserver']
 
@@ -119,6 +120,8 @@ set signcolumn=yes
 
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+nmap <S-Tab> :tabprev<CR>
+nmap <Tab> :tabnext<CR>
 
 function! s:check_back_space() abort
   let col = col('.') - 1
@@ -202,15 +205,17 @@ endfunction
 set statusline=
 set statusline+=%{LspStatus()}
 
-nnoremap <C-o> <C-o>zz
-nnoremap <C-i> <C-i>zz
 nnoremap gd gdzz
 nnoremap gi gdzz
 nnoremap gr gdzz
 
-lua <<EOF
-vim.g.neon_transparent = true
-vim.cmd[[colorscheme neon]]
+" colorscheme rvcs
+colorscheme catppuccin
+lua << EOF
+local catppuccin = require("catppuccin")
+
+-- configure it
+catppuccin.setup()
 EOF
 
 set cursorline
@@ -223,7 +228,7 @@ augroup END
 
 let g:nvim_tree_quit_on_open = 1 "0 by default, closes the tree when you open a file
 let g:nvim_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
-let g:nvim_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
+let g:nvim_tree_git_hl = 0 "0 by default, will enable file highlight for git attributes (can be used without the icons).
 let g:nvim_tree_highlight_opened_files = 1 "0 by default, will enable folder and file icon highlight for opened files/directories.
 let g:nvim_tree_root_folder_modifier = ':~' "This is the default. See :help filename-modifiers for more options
 let g:nvim_tree_add_trailing = 1 "0 by default, append a trailing slash to folder names
@@ -287,9 +292,6 @@ nnoremap <leader>n :NvimTreeFindFile<CR>
 
 " a list of groups can be found at `:help nvim_tree_highlight`
 highlight NvimTreeFolderIcon guibg=blue
-
-nmap <S-Tab> :tabprev<Return>
-nmap <Tab> :tabnext<Return>
 
 nnoremap + <C-a>
 nnoremap - <C-x>

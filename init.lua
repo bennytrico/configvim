@@ -74,9 +74,9 @@ require'nvim-tree'.setup {
     hijack_netrw = true,
     -- ignore_ft_on_setup = { "dashboard" },
     quit_on_open = true,
-    hide_dotfiles = 1,
+    hide_dotfiles = 0,
     follow = 1,
-    git_hl = 1,
+    git_hl = 0,
     auto_close = false,
     open_on_tab = false,
     hijack_cursor = true,
@@ -86,6 +86,11 @@ require'nvim-tree'.setup {
         update_cwd  = true,
         ignore_list = {}
     },
+	git = {
+		enable = true,
+		ignore = false,
+		timeout = 500,
+	},
 	diagnostics = {
 		enable = false,
 		icons = {
@@ -153,3 +158,44 @@ else
         require('lsputil.symbols').workspace_handler(nil, result, { bufnr = bufn }, nil)
     end
 end
+
+local border_chars = {
+	TOP_LEFT = '┌',
+	TOP_RIGHT = '┐',
+	MID_HORIZONTAL = '─',
+	MID_VERTICAL = '│',
+	BOTTOM_LEFT = '└',
+	BOTTOM_RIGHT = '┘',
+}
+
+vim.g.lsp_utils_location_opts = {
+	height = 24,
+	mode = 'editor',
+	preview = {
+		title = 'Location Preview',
+		border = true,
+		border_chars = border_chars
+	},
+	keymaps = {
+		n = {
+			['<C-n>'] = 'j',
+			['<C-p>'] = 'k',
+		}
+	}
+}
+
+
+vim.g.lsp_utils_symbols_opts = {
+	height = 24,
+	mode = 'editor',
+	list = {
+		border = true,
+		border_chars = border_chars
+	},
+	preview = {
+		title = 'Symbols Preview',
+		border = true,
+		border_chars = border_chars
+	},
+	prompt = {},
+}
