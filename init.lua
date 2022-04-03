@@ -19,8 +19,13 @@ require("lsp-colors").setup({
 require('indent_blank_line_own')
 
 vim.cmd [[
-  autocmd BufWritePost *.go silent exec ":GoFmt"
+  " autocmd BufWritePost *.go silent exec ":GoFmt"
+  autocmd BufWritePost *.go lua vim.lsp.buf.formatting()
   autocmd BufWritePre *.go silent exec ":GoImports"
+  autocmd BufWritePre *.ts lua vim.lsp.buf.formatting()
+  autocmd BufWritePre *.tsx lua vim.lsp.buf.formatting()
+  autocmd BufWritePre *.js lua vim.lsp.buf.formatting()
+  autocmd BufWritePre *.jsx lua vim.lsp.buf.formatting()
 ]]
 
   -- autocmd BufWritePre *.go lua goimports(1000)

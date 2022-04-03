@@ -1,6 +1,6 @@
 require("flutter-tools").setup{
   widget_guides = {
-    enabled = true,
+    enabled = false,
   },
   fvm = true,
   dev_log = {

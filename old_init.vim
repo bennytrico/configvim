@@ -22,7 +22,6 @@ Plug 'othree/xml.vim'
 Plug 'othree/html5.vim'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'dart-lang/dart-vim-plugin'
-Plug 'natebosch/dartlang-snippets'
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'w0rp/ale'
 Plug 'tpope/vim-fugitive'
@@ -72,14 +71,15 @@ Plug 'folke/todo-comments.nvim'
 Plug 'onsails/diaglist.nvim'
 Plug 'RishabhRD/popfix'
 Plug 'RishabhRD/nvim-lsputils'
+Plug 'mfussenegger/nvim-jdtls'
 call plug#end()
 
 
 let g:ale_fixers = {
-\   'typescript': ['prettier', 'eslint'],
-\   'javascript': ['prettier', 'eslint'],
-\   'typescriptreact': ['prettier', 'eslint'],
-\   'javascriptreact': ['prettier', 'eslint'],
+\   'typescript': ['eslint', 'prettier'],
+\   'javascript': ['eslint', 'prettier'],
+\   'typescriptreact': ['eslint', 'prettier'],
+\   'javascriptreact': ['eslint', 'prettier'],
 \   'vue': ['prettier', 'eslint'],
 \}
 
@@ -87,8 +87,8 @@ let g:ale_fixers = {
  "\'go': ['gopls'],
  "\}
 let g:ale_linters = {}
-let g:ale_linters.typescript = ['eslint', 'tsserver']
-let g:ale_linters.javascript = ['eslint', 'tsserver']
+let g:ale_linters.typescript = ['eslint', 'prettier']
+let g:ale_linters.javascript = ['eslint', 'prettier']
 
 let g:ale_typescript_prettier_use_local_config = 1
 let g:ale_javascript_prettier_use_local_config = 1
@@ -105,6 +105,9 @@ let leader = exists('g:mapleader') ? g:mapleader : '\'
 autocmd BufReadPost,BufNewFile *.vue setlocal filetype=vue
 autocmd FileType dart setlocal ts=2 sw=2 expandtab
 autocmd FileType typescriptreact setlocal ts=2 sw=2 expandtab
+autocmd FileType typescript setlocal ts=2 sw=2 expandtab
+autocmd FileType javascriptreact setlocal ts=2 sw=2 expandtab
+autocmd FileType javascript setlocal ts=2 sw=2 expandtab
 
 " coc config
 " from readme
@@ -120,8 +123,6 @@ set signcolumn=yes
 
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-nmap <S-Tab> :tabprev<CR>
-nmap <Tab> :tabnext<CR>
 
 function! s:check_back_space() abort
   let col = col('.') - 1
@@ -297,4 +298,3 @@ nnoremap + <C-a>
 nnoremap - <C-x>
 set lazyredraw
 nmap <space>dw <cmd>lua require('diaglist').open_all_diagnostics()<cr>
-
