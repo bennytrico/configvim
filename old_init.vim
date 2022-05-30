@@ -23,7 +23,7 @@ Plug 'othree/html5.vim'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'HerringtonDarkholme/yats.vim'
-Plug 'w0rp/ale'
+" Plug 'w0rp/ale'
 Plug 'tpope/vim-fugitive'
 Plug 'darrikonn/vim-gofmt', { 'do': ':GoUpdateBinaries' }
 Plug 'alvan/vim-closetag'
@@ -31,6 +31,7 @@ Plug 'ojroques/nvim-hardline'
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'kyazdani42/nvim-tree.lua'
 " Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
+"Plug 'github/copilot.vim'
 
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
@@ -72,33 +73,14 @@ Plug 'onsails/diaglist.nvim'
 Plug 'RishabhRD/popfix'
 Plug 'RishabhRD/nvim-lsputils'
 Plug 'mfussenegger/nvim-jdtls'
+
+Plug 'prettier/vim-prettier', { 'do': 'yarn install --frozen-lockfile --production' }
+
+Plug 'nvim-orgmode/orgmode'
+
 call plug#end()
 
-
-let g:ale_fixers = {
-\   'typescript': ['eslint', 'prettier'],
-\   'javascript': ['eslint', 'prettier'],
-\   'typescriptreact': ['eslint', 'prettier'],
-\   'javascriptreact': ['eslint', 'prettier'],
-\   'vue': ['prettier', 'eslint'],
-\}
-
- "let g:ale_linters = {
- "\'go': ['gopls'],
- "\}
-let g:ale_linters = {}
-let g:ale_linters.typescript = ['eslint', 'prettier']
-let g:ale_linters.javascript = ['eslint', 'prettier']
-
-let g:ale_typescript_prettier_use_local_config = 1
-let g:ale_javascript_prettier_use_local_config = 1
-
-let g:ale_fix_on_save = 1
-
-let g:ale_linters_explicit = 1
-
-"let g:go_fmt_command = "gofmt"
-let g:go_fmt_autosave = 1
+let g:prettier#autoformat = 1
 
 let leader = exists('g:mapleader') ? g:mapleader : '\'
 
@@ -131,8 +113,11 @@ endfunction
 
 noremap <leader>y "*y
 noremap <leader>p "*p
-map <C-f> <cmd>Telescope live_grep<cr>
-nnoremap <C-p> <cmd>Telescope find_files<cr>
+" map <C-f> <cmd>Telescope live_grep<cr>
+" nnoremap <C-p> <cmd>Telescope find_files<cr>
+
+nnoremap <C-p> <cmd>lua require('telescope.builtin').find_files()<cr>
+nnoremap <C-f> <cmd>lua require('telescope.builtin').live_grep()<cr>
 
 " git
 nmap <leader>gs :G<CR>
@@ -161,13 +146,10 @@ syntax enable
 "colorscheme tender
 "let g:airline_theme = 'tender'
 
-" disable all linters as that is taken care of by coc.nvim
-let g:go_diagnostics_enabled = 0
-let g:go_metalinter_enabled = []
-
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ensure_installed = {'go', 'typescript', 'javascript', 'html', 'vue', 'dart', 'java'}, 
+  -- one of "all", "maintained" (parsers with maintainers), or a list of languages
   --ignore_install = { "javascript" }, -- List of parsers to ignore installing
   highlight = {
     enable = true,              -- false will disable the whole extension
@@ -179,14 +161,6 @@ require'nvim-treesitter.configs'.setup {
     additional_vim_regex_highlighting = false,
   },
 }
-EOF
-
-lua <<EOF
-require('telescope').setup {
-  defaults = { 
-    file_ignore_patterns = {"node_modules"},
-  },
-} 
 EOF
 
 " mapping for vim-test for scrolling
@@ -227,32 +201,28 @@ augroup CursorLine
   au WinLeave * setlocal nocursorline
 augroup END
 
-let g:nvim_tree_quit_on_open = 1 "0 by default, closes the tree when you open a file
-let g:nvim_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
+" let g:nvim_tree_quit_on_open = 1 "0 by default, closes the tree when you open a file
+" let g:nvim_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
 let g:nvim_tree_git_hl = 0 "0 by default, will enable file highlight for git attributes (can be used without the icons).
 let g:nvim_tree_highlight_opened_files = 1 "0 by default, will enable folder and file icon highlight for opened files/directories.
 let g:nvim_tree_root_folder_modifier = ':~' "This is the default. See :help filename-modifiers for more options
 let g:nvim_tree_add_trailing = 1 "0 by default, append a trailing slash to folder names
 let g:nvim_tree_group_empty = 1 " 0 by default, compact folders that only contain a single folder into one node in the file tree
-let g:nvim_tree_disable_window_picker = 1 "0 by default, will disable the window picker.
 let g:nvim_tree_icon_padding = ' ' "one space by default, used for rendering the space between the icon and the filename. Use with caution, it could break rendering if you set an empty string depending on your font.
 let g:nvim_tree_symlink_arrow = ' >> ' " defaults to ' ➛ '. used as a separator between symlinks' source and target.
 let g:nvim_tree_respect_buf_cwd = 1 "0 by default, will change cwd of nvim-tree to that of new buffer's when opening nvim-tree.
 let g:nvim_tree_create_in_closed_folder = 0 "1 by default, When creating files, sets the path of a file when cursor is on a closed folder to the parent folder when 0, and inside the folder when 1.
 let g:nvim_tree_refresh_wait = 500 "1000 by default, control how often the tree can be refreshed, 1000 means the tree can be refresh once per 1000ms.
-let g:nvim_tree_window_picker_exclude = {
-    \   'filetype': [
-    \     'notify',
-    \     'packer',
-    \     'qf'
-    \   ],
-    \   'buftype': [
-    \     'terminal'
-    \   ]
-    \ }
-" Dictionary of buffer option names mapped to a list of option values that
-" indicates to the window picker that the buffer's window should not be
-" selectable.
+" let g:nvim_tree_window_picker_exclude = {
+"     \   'filetype': [
+"     \     'notify',
+"     \     'packer',
+"     \     'qf'
+"     \   ],
+"     \   'buftype': [
+"     \     'terminal'
+"     \   ]
+"     \ }
 let g:nvim_tree_special_files = { 'README.md': 1, 'Makefile': 1, 'MAKEFILE': 1 } " List of filenames that gets highlighted with NvimTreeSpecialFile
 "Ikf 0, do not show the icons for one of 'git' 'folder' and 'files'
 "1 by default, notice that if 'files' is 1, it will only display
@@ -298,3 +268,4 @@ nnoremap + <C-a>
 nnoremap - <C-x>
 set lazyredraw
 nmap <space>dw <cmd>lua require('diaglist').open_all_diagnostics()<cr>
+

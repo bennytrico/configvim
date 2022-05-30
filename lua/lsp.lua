@@ -41,15 +41,16 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
   buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
   buf_set_keymap('n', '<space>cc', ':cclose<CR>', opts)
+  buf_set_keymap('n', '<leader>r', ':LspRestart<CR>', opts)
 end
 
 function goimports(timeout_ms)
     local context = { only = { "source.organizeImports" } }
     vim.validate { context = { context, "t", true } }
-
+    
     local params = vim.lsp.util.make_range_params()
     params.context = context
-
+    
     -- See the implementation of the textDocument/codeAction callback
     -- (lua/vim/lsp/handler.lua) for how to do this properly.
     local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout_ms)
@@ -57,7 +58,7 @@ function goimports(timeout_ms)
     local actions = result[1].result
     if not actions then return end
     local action = actions[1]
-
+    
     -- textDocument/codeAction can return either Command[] or CodeAction[]. If it
     -- is a CodeAction, it can have either an edit, a command or both. Edits
     -- should be executed first.
@@ -79,14 +80,15 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-local servers = { 'tsserver', 'gopls', 'emmet_ls', 'dartls', 'html', 'vuels', 'intelephense'}
+local servers = { 'tsserver', 'gopls', 'emmet_ls', 'dartls', 'html', 'vuels', 'intelephense', 'eslint', 'jsonls'}
 for _, lsp in ipairs(servers) do
 	nvim_lsp[lsp].setup {
 	 on_attach = on_attach,
 	 capabilities = capabilities,
 	 flags = {
 		debounce_text_changes = 150,
-	 }
+	 },
+	 provideFormatter = true
 	}
 end
 
@@ -133,6 +135,7 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
+	{ name = 'orgmode' }
   },
   formatting = {
     format = lspkind.cmp_format({with_text = false, maxwidth = 50})

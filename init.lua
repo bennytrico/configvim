@@ -1,7 +1,27 @@
 vim.cmd('source ~/.config/nvim/old_init.vim')
 
-require'nvim-treesitter.configs'.setup {
+require('orgmode').setup_ts_grammar()
+
+require('telescope').setup {
+defaults = { 
+  file_ignore_patterns = {"node_modules"},
+},
 }
+
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+    disable = {'org'}, -- Remove this to use TS highlighter for some of the highlights (Experimental)
+    additional_vim_regex_highlighting = {'org'}, -- Required since TS highlighter doesn't support all syntax features (conceal)
+  },
+  ensure_installed = {'org'}, -- Or run :TSUpdate org
+}
+
+require('orgmode').setup({
+  org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
+  org_default_notes_file = '~/Dropbox/org/refile.org',
+})
+
 require('nvim-autopairs').setup{}
 
 require('dashboard-config')
@@ -20,12 +40,17 @@ require('indent_blank_line_own')
 
 vim.cmd [[
   " autocmd BufWritePost *.go silent exec ":GoFmt"
-  autocmd BufWritePost *.go lua vim.lsp.buf.formatting()
-  autocmd BufWritePre *.go silent exec ":GoImports"
+  " autocmd BufWritePost *.go lua vim.lsp.buf.formatting()
+  " autocmd BufWritePre *.go lua vim.lsp.buf.formatting()
+  " autocmd BufWritePre *.go lua goimports(1000)
+  autocmd BufWritePre *.go :silent! lua vim.lsp.buf.formatting()
+  autocmd BufWritePre *.go :silent! lua goimports(3000)
+  " autocmd BufWritePre *.go lua goimports(1000)
   autocmd BufWritePre *.ts lua vim.lsp.buf.formatting()
   autocmd BufWritePre *.tsx lua vim.lsp.buf.formatting()
   autocmd BufWritePre *.js lua vim.lsp.buf.formatting()
   autocmd BufWritePre *.jsx lua vim.lsp.buf.formatting()
+  autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll
 ]]
 
   -- autocmd BufWritePre *.go lua goimports(1000)
@@ -63,8 +88,7 @@ local g = vim.g
 g.nvim_tree_highlight_opened_files = 1
 g.nvim_tree_root_folder_modifier = table.concat { ":t:gs?$?/..", string.rep(" ", 1000), "?:gs?^??" }
 g.nvim_tree_add_trailing = 1
-g.nvim_tree_quit_on_open = 1
-g.nvim_tree_indent_markers = 1
+g.nvim_tree_git_hl = 0
 g.nvim_tree_show_icons = {
    git = 1,
    folders = 1,
@@ -78,11 +102,7 @@ require'nvim-tree'.setup {
     disable_netrw = true,
     hijack_netrw = true,
     -- ignore_ft_on_setup = { "dashboard" },
-    quit_on_open = true,
-    hide_dotfiles = 0,
-    follow = 1,
-    git_hl = 0,
-    auto_close = false,
+    -- follow = 1,
     open_on_tab = false,
     hijack_cursor = true,
     update_cwd = false,
@@ -108,7 +128,7 @@ require'nvim-tree'.setup {
     view = {
         width = 35,
         side = 'left',
-        auto_resize = true,
+    	preserve_window_proportions = true,
         mappings = {
             custom_only = false,
             list = {
@@ -116,7 +136,27 @@ require'nvim-tree'.setup {
                 { key = "S", cb = tree_cb("split") },
             }
         }
-    }
+    },
+	actions = {
+		use_system_clipboard = true,
+		change_dir = {
+		  enable = true,
+		  global = false,
+		  restrict_above_cwd = false,
+		},
+		open_file = {
+		  quit_on_open = true,
+		  resize_window = false,
+		  window_picker = {
+			enable = true,
+			chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+			exclude = {
+			  filetype = { "notify", "packer", "qf", "diff", "fugitive", "fugitiveblame" },
+			  buftype = { "nofile", "terminal", "help" },
+			},
+		  },
+		},
+	  },
 }
 
 if vim.fn.has('nvim-0.5.1') == 1 then
