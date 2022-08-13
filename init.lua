@@ -1,12 +1,16 @@
 vim.cmd('source ~/.config/nvim/old_init.vim')
 
+ require("which-key").setup {
+}
+
 require('orgmode').setup_ts_grammar()
 
 require('telescope').setup {
-defaults = { 
-  file_ignore_patterns = {"node_modules"},
-},
+	defaults = { 
+	  file_ignore_patterns = {"node_modules"},
+	},
 }
+require('telescope').load_extension('dap')
 
 require'nvim-treesitter.configs'.setup {
   highlight = {
@@ -15,6 +19,9 @@ require'nvim-treesitter.configs'.setup {
     additional_vim_regex_highlighting = {'org'}, -- Required since TS highlighter doesn't support all syntax features (conceal)
   },
   ensure_installed = {'org'}, -- Or run :TSUpdate org
+  autotag = {
+	  enable = true
+  }
 }
 
 require('orgmode').setup({
@@ -28,6 +35,7 @@ require('dashboard-config')
 require('go')
 require('option')
 require('lsp')
+require('own-dap.init').setup()
 require('hardline').setup {}
 require('own_flutter')
 require("lsp-colors").setup({
@@ -50,6 +58,8 @@ vim.cmd [[
   autocmd BufWritePre *.tsx lua vim.lsp.buf.formatting()
   autocmd BufWritePre *.js lua vim.lsp.buf.formatting()
   autocmd BufWritePre *.jsx lua vim.lsp.buf.formatting()
+  autocmd BufWritePre *.json lua vim.lsp.buf.formatting()
+  " autocmd BufWritePre *.json :silent exec ":%!jq ."
   autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll
 ]]
 
@@ -84,17 +94,7 @@ require("nvim_comment").setup({
 	end
 })
 
-local g = vim.g
-g.nvim_tree_highlight_opened_files = 1
-g.nvim_tree_root_folder_modifier = table.concat { ":t:gs?$?/..", string.rep(" ", 1000), "?:gs?^??" }
-g.nvim_tree_add_trailing = 1
-g.nvim_tree_git_hl = 0
-g.nvim_tree_show_icons = {
-   git = 1,
-   folders = 1,
-   folder_arrows = 1,
-   files = 1,
-}
+local root_folder_modifier = table.concat { ":t:gs?$?/..", string.rep(" ", 1000), "?:gs?^??" }
 
 local tree_cb = require'nvim-tree.config'.nvim_tree_callback
 
@@ -103,9 +103,11 @@ require'nvim-tree'.setup {
     hijack_netrw = true,
     -- ignore_ft_on_setup = { "dashboard" },
     -- follow = 1,
+  	create_in_closed_folder = false,
     open_on_tab = false,
     hijack_cursor = true,
     update_cwd = false,
+  	respect_buf_cwd = true,
     update_focused_file = {
         enable      = true,
         update_cwd  = false,
@@ -125,6 +127,48 @@ require'nvim-tree'.setup {
 		  error = "",
 		}
 	  },
+	renderer = {
+		root_folder_modifier = root_folder_modifier,
+    	add_trailing = true,
+		group_empty = true,
+		indent_markers = {
+			enable = true,
+			  icons = {
+				corner = "└ ",
+				edge = "│ ",
+				none = "  ",
+			  },
+		},
+		icons = {
+		  symlink_arrow = " ➛ ",
+
+		  glyphs = {
+     default = '',
+     symlink = '',
+     git = {
+       unstaged = "✗",
+       staged = "✓",
+       unmerged = "",
+       renamed = "➜",
+       untracked = "★",
+       deleted = "",
+       ignored = "◌"
+       },
+     folder=  {
+       arrow_open = "",
+       arrow_closed = "",
+       default = "",
+       open = "",
+       empty = "",
+       empty_open = "",
+       symlink = "",
+       symlink_open = "",
+       }
+		  }
+		},
+	    highlight_opened_files = "*",
+		special_files = { "Cargo.toml", "Makefile", "README.md", "readme.md" },
+	},
     view = {
         width = 35,
         side = 'left',
@@ -244,3 +288,9 @@ vim.g.lsp_utils_symbols_opts = {
 	},
 	prompt = {},
 }
+
+-- harpoon
+vim.api.nvim_set_keymap('n', '<space>ha', ':lua require("harpoon.mark").add_file()<CR>', {noremap=true, silent=true})
+vim.api.nvim_set_keymap('n', '<space>hh', ':lua require("harpoon.ui").toggle_quick_menu()<CR>', {noremap=true,silent=true})
+
+require'colorizer'.setup()

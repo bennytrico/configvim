@@ -35,7 +35,8 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   --buf_set_keymap('n', '<space>ca', '<cmd>CodeActionMenu<CR>', opts)
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR> zz', opts)
-  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  -- buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
   buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
@@ -80,30 +81,66 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-local servers = { 'tsserver', 'gopls', 'emmet_ls', 'dartls', 'html', 'vuels', 'intelephense', 'eslint', 'jsonls'}
+local servers = { 'tsserver', 'gopls', 'emmet_ls', 'html', 'vuels', 'intelephense', 'eslint', 'jsonls', 'golangci_lint_ls', 'dartls'}
 for _, lsp in ipairs(servers) do
-	nvim_lsp[lsp].setup {
-	 on_attach = on_attach,
-	 capabilities = capabilities,
-	 flags = {
-		debounce_text_changes = 150,
-	 },
-	 provideFormatter = true
-	}
+	if lsp == "" then
+		nvim_lsp[lsp].setup {
+			 cmd = {"gopls", "serve"},
+			 on_attach = on_attach,
+			 capabilities = capabilities,
+			 flags = {
+				debounce_text_changes = 150,
+			 },
+			 provideFormatter = true,
+			 settings = {
+			  gopls = {
+				analyses = {
+				  unusedparams = true,
+				},
+				staticcheck = true,
+			  },
+			},
+		}
+	elseif lsp == "dartls" then
+		nvim_lsp[lsp].setup {
+		 on_attach = on_attach,
+		 capabilities = capabilities,
+		 flags = {
+			debounce_text_changes = 150,
+		 },
+		 provideFormatter = true,
+		 dart = {
+			enableSnippets = true,
+			updateImportsOnRename = true,
+			completeFunctionCalls = true,
+    		showTodos = true
+		 }
+		}
+	else
+		nvim_lsp[lsp].setup {
+		 on_attach = on_attach,
+		 capabilities = capabilities,
+		 flags = {
+			debounce_text_changes = 150,
+		 },
+		 provideFormatter = true
+		}
+	end
 end
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
 
 -- luasnip setup
-local luasnip = require 'luasnip'
+-- local luasnip = require 'luasnip'
 
 -- nvim-cmp setup
 local cmp = require 'cmp'
 cmp.setup {
   snippet = {
     expand = function(args)
-      require('luasnip').lsp_expand(args.body)
+      -- require('luasnip').lsp_expand(args.body)
+	  vim.fn["vsnip#anonymous"](args.body)
     end,
   },
   mapping = {
@@ -134,7 +171,8 @@ cmp.setup {
   },
   sources = {
     { name = 'nvim_lsp' },
-    { name = 'luasnip' },
+    -- { name = 'luasnip' },
+	{ name = 'vsnip' },
 	{ name = 'orgmode' }
   },
   formatting = {
@@ -142,9 +180,49 @@ cmp.setup {
   }
 }
 
+cmp.setup.cmdline('/', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = 'buffer' }
+  }
+})
+
+cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    { name = 'cmdline' }
+  })
+})
+
 local cmp_autopairs = require('nvim-autopairs.completion.cmp')
 cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done({  map_char = { tex = '' } }))
 
 -- add a lisp filetype (wrap my-function), FYI: Hardcoded = { "clojure", "clojurescript", "fennel", "janet" }
 cmp_autopairs.lisp[#cmp_autopairs.lisp+1] = "racket"
 
+-- require("flutter-tools").setup{
+--   widget_guides = {
+--     enabled = false,
+--   },
+--   fvm = true,
+--   dev_log = {
+--     enabled = true,
+--     open_cmd = "tabedit", -- command to use to open the log buffer
+--   },
+--   dev_tools = {
+--     autostart = true, -- autostart devtools server if not detected
+--   },
+--   lsp = {
+--     color = { -- show the derived colours for dart variables
+--       enabled = true, -- whether or not to highlight color variables at all, only supported on flutter >= 2.10
+--       background = false, -- highlight the background
+--       foreground = false, -- highlight the foreground
+--       virtual_text = true, -- show the highlight using virtual text
+--       virtual_text_str = "■", -- the virtual text character to highlight
+--     },
+--     on_attach = on_attach,
+--     capabilities = capabilities -- e.g. lsp_status capabilities
+--   }
+-- }

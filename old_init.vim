@@ -17,9 +17,7 @@ Plug 'mattn/emmet-vim'
 Plug 'ryanoasis/vim-devicons'
 Plug 'airblade/vim-gitgutter'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'posva/vim-vue'
 Plug 'othree/xml.vim'
-Plug 'othree/html5.vim'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'HerringtonDarkholme/yats.vim'
@@ -45,8 +43,17 @@ Plug 'terrortylor/nvim-comment'
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'saadparwaiz1/cmp_luasnip'
-Plug 'L3MON4D3/LuaSnip'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+
+
+" For vsnip users.
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
+
+" Plug 'saadparwaiz1/cmp_luasnip'
+" Plug 'L3MON4D3/LuaSnip'
 
 Plug 'nvim-lua/lsp-status.nvim'
 Plug 'windwp/nvim-autopairs'
@@ -74,13 +81,31 @@ Plug 'RishabhRD/popfix'
 Plug 'RishabhRD/nvim-lsputils'
 Plug 'mfussenegger/nvim-jdtls'
 
-Plug 'prettier/vim-prettier', { 'do': 'yarn install --frozen-lockfile --production' }
+" Plug 'prettier/vim-prettier', { 'do': 'yarn install --frozen-lockfile --production' }
 
 Plug 'nvim-orgmode/orgmode'
 
+Plug 'ThePrimeagen/harpoon'
+
+Plug 'folke/which-key.nvim'
+
+Plug 'mfussenegger/nvim-dap'
+Plug 'Pocco81/dap-buddy.nvim'
+Plug 'theHamsta/nvim-dap-virtual-text'
+Plug 'rcarriga/nvim-dap-ui'
+Plug 'mfussenegger/nvim-dap-python'
+Plug 'nvim-telescope/telescope-dap.nvim'
+Plug 'jbyuki/one-small-step-for-vimkind'
+
+Plug 'norcalli/nvim-colorizer.lua'
+Plug 'xiyaowong/nvim-transparent'
+
+Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+
 call plug#end()
 
-let g:prettier#autoformat = 1
+
+set completeopt=menu,menuone,noselect
 
 let leader = exists('g:mapleader') ? g:mapleader : '\'
 
@@ -90,9 +115,8 @@ autocmd FileType typescriptreact setlocal ts=2 sw=2 expandtab
 autocmd FileType typescript setlocal ts=2 sw=2 expandtab
 autocmd FileType javascriptreact setlocal ts=2 sw=2 expandtab
 autocmd FileType javascript setlocal ts=2 sw=2 expandtab
+autocmd FileType json setlocal ts=2 sw=2 expandtab
 
-" coc config
-" from readme
 " if hidden is not set, TextEdit might fail.
 set hidden " Some servers have issues with backup files, see #649 set nobackup set nowritebackup " Better display for messages set cmdheight=2 " You will have bad experience for diagnostic messages when it's default 4000.
 set updatetime=300
@@ -148,7 +172,7 @@ syntax enable
 
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = {'go', 'typescript', 'javascript', 'html', 'vue', 'dart', 'java'}, 
+  ensure_installed = {'go', 'typescript', 'javascript', 'html', 'vue', 'dart', 'java', 'json'}, 
   -- one of "all", "maintained" (parsers with maintainers), or a list of languages
   --ignore_install = { "javascript" }, -- List of parsers to ignore installing
   highlight = {
@@ -201,60 +225,7 @@ augroup CursorLine
   au WinLeave * setlocal nocursorline
 augroup END
 
-" let g:nvim_tree_quit_on_open = 1 "0 by default, closes the tree when you open a file
-" let g:nvim_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
-let g:nvim_tree_git_hl = 0 "0 by default, will enable file highlight for git attributes (can be used without the icons).
-let g:nvim_tree_highlight_opened_files = 1 "0 by default, will enable folder and file icon highlight for opened files/directories.
-let g:nvim_tree_root_folder_modifier = ':~' "This is the default. See :help filename-modifiers for more options
-let g:nvim_tree_add_trailing = 1 "0 by default, append a trailing slash to folder names
-let g:nvim_tree_group_empty = 1 " 0 by default, compact folders that only contain a single folder into one node in the file tree
-let g:nvim_tree_icon_padding = ' ' "one space by default, used for rendering the space between the icon and the filename. Use with caution, it could break rendering if you set an empty string depending on your font.
-let g:nvim_tree_symlink_arrow = ' >> ' " defaults to ' ➛ '. used as a separator between symlinks' source and target.
-let g:nvim_tree_respect_buf_cwd = 1 "0 by default, will change cwd of nvim-tree to that of new buffer's when opening nvim-tree.
-let g:nvim_tree_create_in_closed_folder = 0 "1 by default, When creating files, sets the path of a file when cursor is on a closed folder to the parent folder when 0, and inside the folder when 1.
 let g:nvim_tree_refresh_wait = 500 "1000 by default, control how often the tree can be refreshed, 1000 means the tree can be refresh once per 1000ms.
-" let g:nvim_tree_window_picker_exclude = {
-"     \   'filetype': [
-"     \     'notify',
-"     \     'packer',
-"     \     'qf'
-"     \   ],
-"     \   'buftype': [
-"     \     'terminal'
-"     \   ]
-"     \ }
-let g:nvim_tree_special_files = { 'README.md': 1, 'Makefile': 1, 'MAKEFILE': 1 } " List of filenames that gets highlighted with NvimTreeSpecialFile
-"Ikf 0, do not show the icons for one of 'git' 'folder' and 'files'
-"1 by default, notice that if 'files' is 1, it will only display
-"if nvim-web-devicons is installed and on your runtimepath.
-"if folder is 1, you can also tell folder_arrows 1 to show small arrows next to the folder icons.
-"but this will not work when you set indent_markers (because of UI conflict)
-
-" default will show icon by default if no icon is provided
-" default shows no icon by default
-let g:nvim_tree_icons = {
-    \ 'default': '',
-    \ 'symlink': '',
-    \ 'git': {
-    \   'unstaged': "✗",
-    \   'staged': "✓",
-    \   'unmerged': "",
-    \   'renamed': "➜",
-    \   'untracked': "★",
-    \   'deleted': "",
-    \   'ignored': "◌"
-    \   },
-    \ 'folder': {
-    \   'arrow_open': "",
-    \   'arrow_closed': "",
-    \   'default': "",
-    \   'open': "",
-    \   'empty': "",
-    \   'empty_open': "",
-    \   'symlink': "",
-    \   'symlink_open': "",
-    \   }
-    \ }
 
 nnoremap <C-n> :NvimTreeToggle<CR>
 nnoremap <leader>r :NvimTreeRefresh<CR>
@@ -269,3 +240,4 @@ nnoremap - <C-x>
 set lazyredraw
 nmap <space>dw <cmd>lua require('diaglist').open_all_diagnostics()<cr>
 
+let g:transparent_enabled = v:true
