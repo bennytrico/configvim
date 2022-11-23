@@ -60,7 +60,7 @@ Plug 'windwp/nvim-autopairs'
 Plug 'windwp/nvim-ts-autotag'
 
 " Plug 'rafaelsq/nvim-goc.lua'
-Plug 'kyoh86/vim-go-coverage'
+" Plug 'kyoh86/vim-go-coverage'
 Plug 'folke/lsp-colors.nvim'
 
 Plug 'akinsho/flutter-tools.nvim'
@@ -102,6 +102,7 @@ Plug 'xiyaowong/nvim-transparent'
 
 Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 
+Plug 'andythigpen/nvim-coverage'
 call plug#end()
 
 
@@ -116,6 +117,7 @@ autocmd FileType typescript setlocal ts=2 sw=2 expandtab
 autocmd FileType javascriptreact setlocal ts=2 sw=2 expandtab
 autocmd FileType javascript setlocal ts=2 sw=2 expandtab
 autocmd FileType json setlocal ts=2 sw=2 expandtab
+autocmd FileType css setlocal ts=2 sw=2 expandtab
 
 " if hidden is not set, TextEdit might fail.
 set hidden " Some servers have issues with backup files, see #649 set nobackup set nowritebackup " Better display for messages set cmdheight=2 " You will have bad experience for diagnostic messages when it's default 4000.

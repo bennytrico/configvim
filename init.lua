@@ -294,3 +294,21 @@ vim.api.nvim_set_keymap('n', '<space>ha', ':lua require("harpoon.mark").add_file
 vim.api.nvim_set_keymap('n', '<space>hh', ':lua require("harpoon.ui").toggle_quick_menu()<CR>', {noremap=true,silent=true})
 
 require'colorizer'.setup()
+
+require("coverage").setup({
+	commands = true, -- create commands
+	highlights = {
+		-- customize highlight groups created by the plugin
+		covered = { fg = "#C3E88D" },   -- supports style, fg, bg, sp (see :h highlight-gui)
+		uncovered = { fg = "#F07178" },
+	},
+	signs = {
+		-- use your own highlight groups or text markers
+		covered = { hl = "CoverageCovered", text = "▎" },
+		uncovered = { hl = "CoverageUncovered", text = "▎" },
+	},
+	summary = {
+		-- customize the summary pop-up
+		min_coverage = 80.0,      -- minimum coverage threshold (used for highlighting)
+	},
+})

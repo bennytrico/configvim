@@ -78,10 +78,22 @@ end
 
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-local servers = { 'tsserver', 'gopls', 'emmet_ls', 'html', 'vuels', 'intelephense', 'eslint', 'jsonls', 'golangci_lint_ls', 'dartls'}
+local servers = { 
+	'tsserver',
+	'gopls',
+	'emmet_ls',
+	'html',
+	'vuels',
+	'intelephense',
+	'eslint',
+	'jsonls',
+	'golangci_lint_ls',
+	'dartls',
+	'cssls'
+}
 for _, lsp in ipairs(servers) do
 	if lsp == "" then
 		nvim_lsp[lsp].setup {
@@ -116,6 +128,17 @@ for _, lsp in ipairs(servers) do
     		showTodos = true
 		 }
 		}
+	elseif lsp == 'cssls' then
+		capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+		nvim_lsp[lsp].setup {
+		 on_attach = on_attach,
+		 capabilities = capabilities,
+		 flags = {
+			debounce_text_changes = 150,
+		 },
+		 provideformatter = true
+		}
 	else
 		nvim_lsp[lsp].setup {
 		 on_attach = on_attach,
@@ -123,7 +146,7 @@ for _, lsp in ipairs(servers) do
 		 flags = {
 			debounce_text_changes = 150,
 		 },
-		 provideFormatter = true
+		 provideformatter = true
 		}
 	end
 end
@@ -200,7 +223,7 @@ local cmp_autopairs = require('nvim-autopairs.completion.cmp')
 cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done({  map_char = { tex = '' } }))
 
 -- add a lisp filetype (wrap my-function), FYI: Hardcoded = { "clojure", "clojurescript", "fennel", "janet" }
-cmp_autopairs.lisp[#cmp_autopairs.lisp+1] = "racket"
+-- cmp_autopairs.lisp[#cmp_autopairs.lisp+1] = "racket"
 
 -- require("flutter-tools").setup{
 --   widget_guides = {
