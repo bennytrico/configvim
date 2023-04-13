@@ -67,9 +67,11 @@ Plug 'akinsho/flutter-tools.nvim'
 Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'onsails/lspkind-nvim'
 
+" Color
 " Plug 'rafamadriz/neon'
+Plug 'tomasiser/vim-code-dark'
 " Plug 'shaeinst/roshnivim-cs'
-Plug 'catppuccin/nvim', {'as': 'catppuccin'}
+" Plug 'catppuccin/nvim', {'as': 'catppuccin'}
 
 Plug 'ellisonleao/glow.nvim'
 Plug 'goolord/alpha-nvim'
@@ -103,6 +105,12 @@ Plug 'xiyaowong/nvim-transparent'
 Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 
 Plug 'andythigpen/nvim-coverage'
+
+Plug 'rest-nvim/rest.nvim'
+
+Plug 'karb94/neoscroll.nvim'
+
+Plug 'fedepujol/move.nvim'
 call plug#end()
 
 
@@ -172,22 +180,22 @@ syntax enable
 "colorscheme tender
 "let g:airline_theme = 'tender'
 
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = {'go', 'typescript', 'javascript', 'html', 'vue', 'dart', 'java', 'json'}, 
-  -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-  --ignore_install = { "javascript" }, -- List of parsers to ignore installing
-  highlight = {
-    enable = true,              -- false will disable the whole extension
-    disable = { "c", "rust" },  -- list of language that will be disabled
-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-    -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = false,
-  },
-}
-EOF
+" lua <<EOF
+" require'nvim-treesitter.configs'.setup {
+"   ensure_installed = {'go', 'typescript', 'javascript', 'html', 'vue', 'dart', 'java', 'json'}, 
+"   -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+"   --ignore_install = { "javascript" }, -- List of parsers to ignore installing
+"   highlight = {
+"     enable = true,              -- false will disable the whole extension
+"     disable = { "c", "rust" },  -- list of language that will be disabled
+"     -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+"     -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+"     -- Using this option may slow down your editor, and you may see some duplicate highlights.
+"     -- Instead of true it can also be a list of languages
+"     additional_vim_regex_highlighting = false,
+"   },
+" }
+" EOF
 
 " mapping for vim-test for scrolling
 if has('nvim')
@@ -211,12 +219,15 @@ nnoremap gi gdzz
 nnoremap gr gdzz
 
 " colorscheme rvcs
-colorscheme catppuccin
+" colorscheme catppuccin
+colorscheme codedark
+" colorscheme abscs
+
 lua << EOF
-local catppuccin = require("catppuccin")
+-- local catppuccin = require("catppuccin")
 
 -- configure it
-catppuccin.setup()
+-- catppuccin.setup()
 EOF
 
 set cursorline

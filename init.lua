@@ -12,17 +12,23 @@ require('telescope').setup {
 }
 require('telescope').load_extension('dap')
 
-require'nvim-treesitter.configs'.setup {
+require('nvim-treesitter.configs').setup {
+  auto_install = true,
   highlight = {
     enable = true,
-    disable = {'org'}, -- Remove this to use TS highlighter for some of the highlights (Experimental)
     additional_vim_regex_highlighting = {'org'}, -- Required since TS highlighter doesn't support all syntax features (conceal)
   },
   ensure_installed = {'org'}, -- Or run :TSUpdate org
   autotag = {
-	  enable = true
+	  enable = true,
+	  filetypes = {
+	        'html', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'svelte', 'vue', 'tsx', 'jsx', 'rescript',
+	        'css', 'lua', 'xml', 'php', 'markdown'
+	      },
   }
 }
+
+require('nvim-ts-autotag').setup()
 
 require('orgmode').setup({
   org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
@@ -51,14 +57,14 @@ vim.cmd [[
   " autocmd BufWritePost *.go lua vim.lsp.buf.formatting()
   " autocmd BufWritePre *.go lua vim.lsp.buf.formatting()
   " autocmd BufWritePre *.go lua goimports(1000)
-  autocmd BufWritePre *.go :silent! lua vim.lsp.buf.formatting()
+  autocmd BufWritePre *.go :silent! lua vim.lsp.buf.format()
   autocmd BufWritePre *.go :silent! lua goimports(3000)
   " autocmd BufWritePre *.go lua goimports(1000)
-  autocmd BufWritePre *.ts lua vim.lsp.buf.formatting()
-  autocmd BufWritePre *.tsx lua vim.lsp.buf.formatting()
-  autocmd BufWritePre *.js lua vim.lsp.buf.formatting()
-  autocmd BufWritePre *.jsx lua vim.lsp.buf.formatting()
-  autocmd BufWritePre *.json lua vim.lsp.buf.formatting()
+  autocmd BufWritePre *.ts lua vim.lsp.buf.format()
+  autocmd BufWritePre *.tsx lua vim.lsp.buf.format()
+  autocmd BufWritePre *.js lua vim.lsp.buf.format()
+  autocmd BufWritePre *.jsx lua vim.lsp.buf.format()
+  autocmd BufWritePre *.json lua vim.lsp.buf.format()
   " autocmd BufWritePre *.json :silent exec ":%!jq ."
   autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js EslintFixAll
 ]]
@@ -292,6 +298,9 @@ vim.g.lsp_utils_symbols_opts = {
 -- harpoon
 vim.api.nvim_set_keymap('n', '<space>ha', ':lua require("harpoon.mark").add_file()<CR>', {noremap=true, silent=true})
 vim.api.nvim_set_keymap('n', '<space>hh', ':lua require("harpoon.ui").toggle_quick_menu()<CR>', {noremap=true,silent=true})
+--
+--REST
+vim.api.nvim_set_keymap('n', '<space>r', '<Plug>RestNvim,', {noremap=true,silent=true})
 
 require'colorizer'.setup()
 
@@ -312,3 +321,53 @@ require("coverage").setup({
 		min_coverage = 80.0,      -- minimum coverage threshold (used for highlighting)
 	},
 })
+
+require("rest-nvim").setup({
+      -- Open request results in a horizontal split
+      result_split_horizontal = false,
+      -- Keep the http file buffer above|left when split horizontal|vertical
+      result_split_in_place = false,
+      -- Skip SSL verification, useful for unknown certificates
+      skip_ssl_verification = false,
+      -- Encode URL before making request
+      encode_url = true,
+      -- Highlight request on run
+      highlight = {
+        enabled = true,
+        timeout = 150,
+      },
+      result = {
+        -- toggle showing URL, HTTP info, headers at top the of result window
+        show_url = true,
+        show_http_info = true,
+        show_headers = true,
+        -- executables or functions for formatting response body [optional]
+        -- set them to nil if you want to disable them
+        formatters = {
+          json = "jq",
+          html = function(body)
+            return vim.fn.system({"tidy", "-i", "-q", "-"}, body)
+          end
+        },
+      },
+      -- Jump to request line on run
+      jump_to_request = false,
+      env_file = '.env',
+      custom_dynamic_variables = {},
+      yank_dry_run = true,
+    })
+
+require('neoscroll').setup({
+	mappings = {'<C-u>', '<C-d>', '<C-y>', '<C-e>', 'zt', 'zz', 'zb'},
+})
+
+
+local opts = { noremap = true, silent = true }
+vim.api.nvim_set_keymap("n", "∆", ":MoveLine(1)<CR>", opts)
+vim.api.nvim_set_keymap("n", "˚", ":MoveLine(-1)<CR>", opts)
+vim.api.nvim_set_keymap("v", "∆", ":MoveBlock(1)<CR>", opts)
+vim.api.nvim_set_keymap("v", "˚", ":MoveBlock(-1)<CR>", opts)
+vim.api.nvim_set_keymap("n", "¬", ":MoveHChar(1)<CR>", opts)
+vim.api.nvim_set_keymap("n", "˙", ":MoveHChar(-1)<CR>", opts)
+vim.api.nvim_set_keymap("v", "¬", ":MoveHBlock(1)<CR>", opts)
+vim.api.nvim_set_keymap("v", "˙", ":MoveHBlock(-1)<CR>", opts)

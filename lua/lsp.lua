@@ -90,9 +90,11 @@ local servers = {
 	'intelephense',
 	'eslint',
 	'jsonls',
-	'golangci_lint_ls',
+	-- 'golangci_lint_ls',
 	'dartls',
-	'cssls'
+	'cssls',
+	'bashls',
+	'sqlls'
 }
 for _, lsp in ipairs(servers) do
 	if lsp == "" then
@@ -114,20 +116,6 @@ for _, lsp in ipairs(servers) do
 			},
 		}
 	elseif lsp == "dartls" then
-		nvim_lsp[lsp].setup {
-		 on_attach = on_attach,
-		 capabilities = capabilities,
-		 flags = {
-			debounce_text_changes = 150,
-		 },
-		 provideFormatter = true,
-		 dart = {
-			enableSnippets = true,
-			updateImportsOnRename = true,
-			completeFunctionCalls = true,
-    		showTodos = true
-		 }
-		}
 	elseif lsp == 'cssls' then
 		capabilities.textDocument.completion.completionItem.snippetSupport = true
 
@@ -158,7 +146,7 @@ vim.o.completeopt = 'menuone,noselect'
 -- local luasnip = require 'luasnip'
 
 -- nvim-cmp setup
-local cmp = require 'cmp'
+local cmp = require('cmp')
 cmp.setup {
   snippet = {
     expand = function(args)
@@ -220,32 +208,37 @@ cmp.setup.cmdline(':', {
 })
 
 local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done({  map_char = { tex = '' } }))
-
+cmp.event:on(
+  'confirm_done',
+  cmp_autopairs.on_confirm_done()
+)
 -- add a lisp filetype (wrap my-function), FYI: Hardcoded = { "clojure", "clojurescript", "fennel", "janet" }
 -- cmp_autopairs.lisp[#cmp_autopairs.lisp+1] = "racket"
 
--- require("flutter-tools").setup{
---   widget_guides = {
---     enabled = false,
---   },
---   fvm = true,
---   dev_log = {
---     enabled = true,
---     open_cmd = "tabedit", -- command to use to open the log buffer
---   },
---   dev_tools = {
---     autostart = true, -- autostart devtools server if not detected
---   },
---   lsp = {
---     color = { -- show the derived colours for dart variables
---       enabled = true, -- whether or not to highlight color variables at all, only supported on flutter >= 2.10
---       background = false, -- highlight the background
---       foreground = false, -- highlight the foreground
---       virtual_text = true, -- show the highlight using virtual text
---       virtual_text_str = "■", -- the virtual text character to highlight
---     },
---     on_attach = on_attach,
---     capabilities = capabilities -- e.g. lsp_status capabilities
---   }
--- }
+require("flutter-tools").setup{
+  widget_guides = {
+    enabled = false,
+  },
+  fvm = true,
+  dev_log = {
+    enabled = true,
+    open_cmd = "tabedit", -- command to use to open the log buffer
+  },
+  dev_tools = {
+    autostart = true, -- autostart devtools server if not detected
+  },
+  lsp = {
+    color = { -- show the derived colours for dart variables
+      enabled = true, -- whether or not to highlight color variables at all, only supported on flutter >= 2.10
+      background = true, -- highlight the background
+      foreground = true, -- highlight the foreground
+      virtual_text = true, -- show the highlight using virtual text
+      virtual_text_str = "■", -- the virtual text character to highlight
+    },
+    on_attach = on_attach,
+    capabilities = capabilities -- e.g. lsp_status capabilities
+  },
+  settings = {
+      showTodos = false,
+  }
+}
