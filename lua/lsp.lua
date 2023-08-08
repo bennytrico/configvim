@@ -111,9 +111,14 @@ for _, lsp in ipairs(servers) do
 				analyses = {
 				  unusedparams = true,
 				},
+				env = {GOFLAGS="-tags=wireinject"},
+				buildFlags =  {"-tags=wireinject"},
 				staticcheck = true,
 			  },
 			},
+			init_options = {
+				buildFlags =  {"wireinject"},
+  			}
 		}
 	elseif lsp == "dartls" then
 	elseif lsp == 'cssls' then

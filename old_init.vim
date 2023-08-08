@@ -29,7 +29,7 @@ Plug 'ojroques/nvim-hardline'
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'kyazdani42/nvim-tree.lua'
 " Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
-"Plug 'github/copilot.vim'
+" Plug 'github/copilot.vim'
 
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
@@ -111,6 +111,8 @@ Plug 'rest-nvim/rest.nvim'
 Plug 'karb94/neoscroll.nvim'
 
 Plug 'fedepujol/move.nvim'
+
+Plug 'Exafunction/codeium.vim'
 call plug#end()
 
 
