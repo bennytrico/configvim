@@ -102,7 +102,19 @@ require("nvim_comment").setup({
 
 local root_folder_modifier = table.concat { ":t:gs?$?/..", string.rep(" ", 1000), "?:gs?^??" }
 
-local tree_cb = require'nvim-tree.config'.nvim_tree_callback
+local function on_attach(bufnr)
+  local api = require('nvim-tree.api')
+
+  local function opts(desc)
+    return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+  end
+
+  
+  api.config.mappings.default_on_attach(bufnr)
+
+  vim.keymap.set('n', 'S', api.node.open.vertical,opts('Open: Vertical Split'))
+  vim.keymap.set('n', 's', api.node.open.horizontal,opts('Open: Horizontal Split'))
+end
 
 require'nvim-tree'.setup {
     disable_netrw = true,
@@ -182,8 +194,8 @@ require'nvim-tree'.setup {
         mappings = {
             custom_only = false,
             list = {
-                { key = "s", cb = tree_cb("vsplit") },
-                { key = "S", cb = tree_cb("split") },
+                { key = "s", action = "vsplit" },
+                { key = "S", action = "split" },
             }
         }
     },
@@ -207,7 +219,9 @@ require'nvim-tree'.setup {
 		  },
 		},
 	  },
+	on_attach = on_attach,
 }
+
 
 if vim.fn.has('nvim-0.5.1') == 1 then
     vim.lsp.handlers['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
@@ -377,3 +391,18 @@ vim.keymap.set('i', '<C-g>', function () return vim.fn['codeium#Accept']() end, 
 vim.keymap.set('i', '<C-j>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
 vim.keymap.set('i', '<C-k>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
 vim.keymap.set('i', '<C-x>', function() return vim.fn['codeium#Clear']() end, { expr = true })
+
+require'treesitter-context'.setup{
+  enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+  max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+  min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+  line_numbers = true,
+  multiline_threshold = 20, -- Maximum number of lines to collapse for a single context line
+  trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+  mode = 'cursor',  -- Line used to calculate context. Choices: 'cursor', 'topline'
+  -- Separator between context and content. Should be a single character string, like '-'.
+  -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+  separator = nil,
+  zindex = 20, -- The Z-index of the context window
+  on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
+}
