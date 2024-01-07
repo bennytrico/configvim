@@ -90,11 +90,13 @@ local servers = {
 	'intelephense',
 	'eslint',
 	'jsonls',
-	-- 'golangci_lint_ls',
+	'golangci_lint_ls',
 	'dartls',
 	'cssls',
 	'bashls',
-	'sqlls'
+	'sqlls',
+	'astro',
+	'ruby_ls'
 }
 for _, lsp in ipairs(servers) do
 	if lsp == "" then

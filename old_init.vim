@@ -114,6 +114,8 @@ Plug 'karb94/neoscroll.nvim'
 Plug 'fedepujol/move.nvim'
 
 Plug 'Exafunction/codeium.vim'
+
+Plug 'akinsho/git-conflict.nvim'
 call plug#end()
 
 
