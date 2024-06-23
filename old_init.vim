@@ -8,7 +8,7 @@ set guifont=FiraMono\ Nerd\ Font:h11
 "set smartindent
 "set textwidth=80
 set guitablabel=%t
-""set colorcolumn=72
+" set colorcolumn=100
 "set relativenumber
 "set list listchars=tab:\|\-
 
@@ -19,7 +19,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'othree/xml.vim'
 Plug 'maxmellon/vim-jsx-pretty'
-Plug 'dart-lang/dart-vim-plugin'
+" Plug 'dart-lang/dart-vim-plugin'
 Plug 'HerringtonDarkholme/yats.vim'
 " Plug 'w0rp/ale'
 Plug 'tpope/vim-fugitive'
@@ -31,6 +31,7 @@ Plug 'kyazdani42/nvim-tree.lua'
 " Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
 " Plug 'github/copilot.vim'
 
+Plug 'nvim-neotest/nvim-nio'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'vim-test/vim-test'
@@ -65,7 +66,7 @@ Plug 'windwp/nvim-ts-autotag'
 Plug 'folke/lsp-colors.nvim'
 
 Plug 'akinsho/flutter-tools.nvim'
-Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'lukas-reineke/indent-blankline.nvim', {'tag': 'v2.20.8'}
 Plug 'onsails/lspkind-nvim'
 
 " Color
@@ -88,8 +89,6 @@ Plug 'mfussenegger/nvim-jdtls'
 
 Plug 'nvim-orgmode/orgmode'
 
-Plug 'ThePrimeagen/harpoon'
-
 Plug 'folke/which-key.nvim'
 
 Plug 'mfussenegger/nvim-dap'
@@ -107,15 +106,21 @@ Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 
 Plug 'andythigpen/nvim-coverage'
 
-Plug 'rest-nvim/rest.nvim'
+" Plug 'rest-nvim/rest.nvim'
 
-Plug 'karb94/neoscroll.nvim'
+" Plug 'karb94/neoscroll.nvim'
 
 Plug 'fedepujol/move.nvim'
 
 Plug 'Exafunction/codeium.vim'
 
 Plug 'akinsho/git-conflict.nvim'
+
+Plug 'lewis6991/gitsigns.nvim'
+Plug 'romgrk/barbar.nvim'
+Plug 'petertriho/nvim-scrollbar'
+
+Plug 'aznhe21/actions-preview.nvim'
 call plug#end()
 
 
@@ -182,25 +187,6 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 " Theme
 syntax enable
-"colorscheme tender
-"let g:airline_theme = 'tender'
-
-" lua <<EOF
-" require'nvim-treesitter.configs'.setup {
-"   ensure_installed = {'go', 'typescript', 'javascript', 'html', 'vue', 'dart', 'java', 'json'}, 
-"   -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-"   --ignore_install = { "javascript" }, -- List of parsers to ignore installing
-"   highlight = {
-"     enable = true,              -- false will disable the whole extension
-"     disable = { "c", "rust" },  -- list of language that will be disabled
-"     -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-"     -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-"     -- Using this option may slow down your editor, and you may see some duplicate highlights.
-"     -- Instead of true it can also be a list of languages
-"     additional_vim_regex_highlighting = false,
-"   },
-" }
-" EOF
 
 " mapping for vim-test for scrolling
 if has('nvim')
@@ -227,13 +213,6 @@ nnoremap gr gdzz
 " colorscheme catppuccin
 colorscheme codedark
 " colorscheme abscs
-
-lua << EOF
--- local catppuccin = require("catppuccin")
-
--- configure it
--- catppuccin.setup()
-EOF
 
 set cursorline
 highlight CursorLine gui=underline cterm=underline ctermfg=None guifg=None

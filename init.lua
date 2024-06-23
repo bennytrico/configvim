@@ -3,7 +3,22 @@ vim.cmd('source ~/.config/nvim/old_init.vim')
  require("which-key").setup {
 }
 
-require('orgmode').setup_ts_grammar()
+require('move').setup({
+	line = {
+		enable = true, -- Enables line movement
+		indent = true  -- Toggles indentation
+	},
+	block = {
+		enable = true, -- Enables block movement
+		indent = true  -- Toggles indentation
+	},
+	word = {
+		enable = true, -- Enables word movement
+	},
+	char = {
+		enable = false -- Enables char movement
+	}
+})
 
 require('telescope').setup {
 	defaults = { 
@@ -66,6 +81,8 @@ vim.cmd [[
   autocmd BufWritePre *.js lua vim.lsp.buf.format()
   autocmd BufWritePre *.jsx lua vim.lsp.buf.format()
   autocmd BufWritePre *.json lua vim.lsp.buf.format()
+  autocmd BufWritePre *.dart lua vim.lsp.buf.format()
+  autocmd BufWritePre *.sql lua vim.lsp.buf.format()
   " autocmd BufWritePre *.json :silent exec ":%!jq ."
   autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js,*.astro EslintFixAll
 ]]
@@ -185,7 +202,7 @@ require'nvim-tree'.setup {
        }
 		  }
 		},
-	    highlight_opened_files = "*",
+	    highlight_opened_files = "none",
 		special_files = { "Cargo.toml", "Makefile", "README.md", "readme.md" },
 	},
     view = {
@@ -303,10 +320,6 @@ vim.g.lsp_utils_symbols_opts = {
 	prompt = {},
 }
 
--- harpoon
-vim.api.nvim_set_keymap('n', '<space>ha', ':lua require("harpoon.mark").add_file()<CR>', {noremap=true, silent=true})
-vim.api.nvim_set_keymap('n', '<space>hh', ':lua require("harpoon.ui").toggle_quick_menu()<CR>', {noremap=true,silent=true})
---
 --REST
 vim.api.nvim_set_keymap('n', '<space>r', '<Plug>RestNvim,', {noremap=true,silent=true})
 
@@ -330,44 +343,9 @@ require("coverage").setup({
 	},
 })
 
-require("rest-nvim").setup({
-      -- Open request results in a horizontal split
-      result_split_horizontal = false,
-      -- Keep the http file buffer above|left when split horizontal|vertical
-      result_split_in_place = false,
-      -- Skip SSL verification, useful for unknown certificates
-      skip_ssl_verification = false,
-      -- Encode URL before making request
-      encode_url = true,
-      -- Highlight request on run
-      highlight = {
-        enabled = true,
-        timeout = 150,
-      },
-      result = {
-        -- toggle showing URL, HTTP info, headers at top the of result window
-        show_url = true,
-        show_http_info = true,
-        show_headers = true,
-        -- executables or functions for formatting response body [optional]
-        -- set them to nil if you want to disable them
-        formatters = {
-          json = "jq",
-          html = function(body)
-            return vim.fn.system({"tidy", "-i", "-q", "-"}, body)
-          end
-        },
-      },
-      -- Jump to request line on run
-      jump_to_request = false,
-      env_file = '.env',
-      custom_dynamic_variables = {},
-      yank_dry_run = true,
-    })
-
-require('neoscroll').setup({
-	mappings = {'<C-u>', '<C-d>', '<C-y>', '<C-e>', 'zt', 'zz', 'zb'},
-})
+-- require('neoscroll').setup({
+-- 	mappings = {'<C-u>', '<C-d>', '<C-y>', '<C-e>', 'zt', 'zz', 'zb'},
+-- })
 
 
 local opts = { noremap = true, silent = true }
@@ -401,4 +379,71 @@ require'treesitter-context'.setup{
   on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
 }
 
+local Error = "#db4b4b"
+local Warning = "#e0af68"
+local Information = "#0db9d7"
+local Hint = "#10B981"
+local Search = "#FAFAFA"
+local Misc = "#A8A8A8"
+
 require('git-conflict').setup()
+require("scrollbar").setup({
+	handle = {
+		color = Information,
+	},
+	marks = {
+        Search = { color = Search },
+        Error = { color = Error },
+        Warn = { color = Warning },
+        Info = { color = Information },
+        Hint = { color = Hint },
+        Misc = { color = Misc },
+		GitAdd = {
+			text = "+",
+            priority = 7,
+            gui = nil,
+            color = Hint,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "GitSignsAdd",
+		},
+		GitChange = {
+            text = "~",
+            priority = 7,
+            gui = nil,
+            color = Warning,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "GitSignsChange",
+        },
+        GitDelete = {
+            text = "-",
+            priority = 7,
+            gui = nil,
+            color = Error,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "GitSignsDelete",
+        },
+    }
+})
+require("gitsigns").setup()
+require("scrollbar.handlers.gitsigns").setup()
+
+vim.keymap.set({ "v", "n" }, "<space>ca", require("actions-preview").code_actions)
+
+require("actions-preview").setup {
+  telescope = {
+    sorting_strategy = "ascending",
+    layout_strategy = "vertical",
+    layout_config = {
+      width = 0.8,
+      height = 0.9,
+      prompt_position = "top",
+      preview_cutoff = 40,
+      preview_height = function(_, _, max_lines)
+        return max_lines - 30
+      end,
+    },
+  },
+}

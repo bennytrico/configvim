@@ -32,7 +32,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
   buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
   buf_set_keymap('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  -- buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   --buf_set_keymap('n', '<space>ca', '<cmd>CodeActionMenu<CR>', opts)
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR> zz', opts)
   -- buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
@@ -90,13 +90,12 @@ local servers = {
 	'intelephense',
 	'eslint',
 	'jsonls',
-	'golangci_lint_ls',
-	'dartls',
+	-- 'golangci_lint_ls',
 	'cssls',
 	'bashls',
 	'sqlls',
 	'astro',
-	'ruby_ls'
+	'ruby_lsp'
 }
 for _, lsp in ipairs(servers) do
 	if lsp == "" then
@@ -122,7 +121,6 @@ for _, lsp in ipairs(servers) do
 				buildFlags =  {"wireinject"},
   			}
 		}
-	elseif lsp == "dartls" then
 	elseif lsp == 'cssls' then
 		capabilities.textDocument.completion.completionItem.snippetSupport = true
 
@@ -224,7 +222,7 @@ cmp.event:on(
 
 require("flutter-tools").setup{
   widget_guides = {
-    enabled = false,
+    enabled = true,
   },
   fvm = true,
   dev_log = {
@@ -245,7 +243,18 @@ require("flutter-tools").setup{
     on_attach = on_attach,
     capabilities = capabilities -- e.g. lsp_status capabilities
   },
-  settings = {
-      showTodos = false,
-  }
+  decorations = {
+    statusline = {
+      -- set to true to be able use the 'flutter_tools_decorations.app_version' in your statusline
+      -- this will show the current version of the flutter app from the pubspec.yaml file
+      app_version = true,
+      -- set to true to be able use the 'flutter_tools_decorations.device' in your statusline
+      -- this will show the currently running device if an application was started with a specific
+      -- device
+      device = true,
+      -- set to true to be able use the 'flutter_tools_decorations.project_config' in your statusline
+      -- this will show the currently selected project configuration
+      project_config = true,
+    }
+  },
 }
