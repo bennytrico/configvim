@@ -10,13 +10,15 @@ vim.opt.textwidth = 80
 vim.opt.relativenumber = true
 -- vim.opt.guitablabel = '%t'
 vim.opt.hidden = true
-vim.opt.updatetime=300
+vim.opt.updatetime = 300
 -- vim.opt.shortmess+=c
 vim.opt.signcolumn = 'yes'
 
 -- Dart
 vim.g.dart_style_guide = 2
 vim.g.dart_format_on_save = 1
+
+vim.api.nvim_set_option("clipboard", "unnamed")
 
 -- Markdown
 vim.g.glow_binary_path = vim.env.HOME .. "/bin"

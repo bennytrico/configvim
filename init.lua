@@ -7,11 +7,11 @@ require("which-key").setup {
 require('move').setup({
   line = {
     enable = true, -- Enables line movement
-    indent = true -- Toggles indentation
+    indent = true  -- Toggles indentation
   },
   block = {
     enable = true, -- Enables block movement
-    indent = true -- Toggles indentation
+    indent = true  -- Toggles indentation
   },
   word = {
     enable = true, -- Enables word movement
@@ -37,28 +37,7 @@ require('telescope').setup {
 }
 require('telescope').load_extension('dap')
 
--- require('nvim-treesitter.configs').setup {
---   auto_install = true,
---   highlight = {
---     enable = true,
---     additional_vim_regex_highlighting = {'org'}, -- Required since TS highlighter doesn't support all syntax features (conceal)
---   },
---   -- ensure_installed = {'org'}, -- Or run :TSUpdate org
---   autotag = {
--- 	  enable = true,
--- 	  filetypes = {
--- 	        'html', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'svelte', 'vue', 'tsx', 'jsx', 'rescript',
--- 	        'css', 'lua', 'xml', 'php', 'markdown', 'sql',
--- 	      },
---   }
--- }
-
 require('nvim-ts-autotag').setup()
-
--- require('orgmode').setup({
---   org_agenda_files = {'~/Dropbox/org/*', '~/my-orgs/**/*'},
---   org_default_notes_file = '~/Dropbox/org/refile.org',
--- })
 
 require('nvim-autopairs').setup {}
 
@@ -78,10 +57,6 @@ require("lsp-colors").setup({
 require('indent_blank_line_own')
 
 vim.cmd [[
-  " autocmd BufWritePost *.go silent exec ":GoFmt"
-  " autocmd BufWritePost *.go lua vim.lsp.buf.formatting()
-  " autocmd BufWritePre *.go lua vim.lsp.buf.formatting()
-  " autocmd BufWritePre *.go lua goimports(1000)
   autocmd BufWritePre *.go :silent! lua vim.lsp.buf.format()
   autocmd BufWritePre *.go :silent! lua goimports(3000)
   autocmd BufWritePre *.ts lua vim.lsp.buf.format()
@@ -93,7 +68,6 @@ vim.cmd [[
   autocmd BufWritePre *.dart lua vim.lsp.buf.format()
   autocmd BufWritePre *.sql lua vim.lsp.buf.format()
   autocmd BufWritePre *.lua lua vim.lsp.buf.format()
-  " autocmd BufWritePre *.json :silent exec ":%!jq ."
   autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js,*.astro EslintFixAll
 
 	autocmd BufReadPost,BufNewFile *.vue setlocal filetype=vue
@@ -108,12 +82,7 @@ vim.cmd [[
 ]]
 
 -- autocmd BufWritePre *.go lua goimports(1000)
-require("todo-comments").setup {
-  -- your configuration comes here
-  -- or leave it empty to use the default settings
-  -- refer to the configuration section below
-}
-
+require("todo-comments").setup {}
 
 require 'nvim-web-devicons'.setup {
   -- your personnal icons can go here (to override)
@@ -127,8 +96,6 @@ require 'nvim-web-devicons'.setup {
       name = "Zsh"
     }
   },
-  -- globally enable default icons (default to false)
-  -- will get overriden by `get_icons` option
   default = true,
 }
 require 'nvim-web-devicons'.get_icons()
@@ -140,19 +107,6 @@ require("nvim_comment").setup({
 
 local root_folder_modifier = table.concat { ":t:gs?$?/..", string.rep(" ", 1000), "?:gs?^??" }
 
-local function on_attach(bufnr)
-  local api = require('nvim-tree.api')
-
-  local function opts(desc)
-    return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
-  end
-
-
-  api.config.mappings.default_on_attach(bufnr)
-
-  vim.keymap.set('n', 's', api.node.open.vertical, opts('Open: Vertical Split'))
-  vim.keymap.set('n', 'S', api.node.open.horizontal, opts('Open: Horizontal Split'))
-end
 
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -267,11 +221,19 @@ require("coverage").setup({
   },
 })
 
-vim.g.codeium_disable_bindings = 1
-vim.keymap.set('i', '<C-g>', function() return vim.fn['codeium#Accept']() end, { expr = true })
-vim.keymap.set('i', '<C-j>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
-vim.keymap.set('i', '<C-k>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
-vim.keymap.set('i', '<C-x>', function() return vim.fn['codeium#Clear']() end, { expr = true })
+local function on_attach(bufnr)
+  local api = require('nvim-tree.api')
+
+  local function opts(desc)
+    return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+  end
+
+
+  api.config.mappings.default_on_attach(bufnr)
+
+  vim.keymap.set('n', 's', api.node.open.vertical, opts('Open: Vertical Split'))
+  vim.keymap.set('n', 'S', api.node.open.horizontal, opts('Open: Horizontal Split'))
+end
 
 require 'treesitter-context'.setup {
   enable = true,            -- Enable this plugin (Can be enabled/disabled later via commands)
@@ -313,7 +275,7 @@ require("scrollbar").setup({
       gui = nil,
       color = Hint,
       cterm = nil,
-      color_nr = nil,       -- cterm
+      color_nr = nil, -- cterm
       highlight = "GitSignsAdd",
     },
     GitChange = {
@@ -322,7 +284,7 @@ require("scrollbar").setup({
       gui = nil,
       color = Warning,
       cterm = nil,
-      color_nr = nil,       -- cterm
+      color_nr = nil, -- cterm
       highlight = "GitSignsChange",
     },
     GitDelete = {
@@ -331,15 +293,13 @@ require("scrollbar").setup({
       gui = nil,
       color = Error,
       cterm = nil,
-      color_nr = nil,       -- cterm
+      color_nr = nil, -- cterm
       highlight = "GitSignsDelete",
     },
   }
 })
 require("gitsigns").setup()
 require("scrollbar.handlers.gitsigns").setup()
-
-vim.keymap.set({ "v", "n" }, "<space>ca", require("actions-preview").code_actions)
 
 require("actions-preview").setup {
   telescope = {
