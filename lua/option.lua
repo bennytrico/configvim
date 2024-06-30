@@ -8,6 +8,11 @@ vim.opt.smartindent = true
 vim.opt.textwidth = 80
 --vim.opt.guitablabel = '%t'
 vim.opt.relativenumber = true
+-- vim.opt.guitablabel = '%t'
+vim.opt.hidden = true
+vim.opt.updatetime=300
+-- vim.opt.shortmess+=c
+vim.opt.signcolumn = 'yes'
 
 -- Dart
 vim.g.dart_style_guide = 2
