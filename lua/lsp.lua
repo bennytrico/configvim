@@ -3,7 +3,7 @@ local lsp_status = require('lsp-status')
 local lspkind = require('lspkind')
 
 lsp_status.config({
-    kind_labels = vim.g.completion_customize_lsp_label
+  kind_labels = vim.g.completion_customize_lsp_label
 })
 lsp_status.register_progress()
 
@@ -19,7 +19,7 @@ local on_attach = function(client, bufnr)
   lsp_status.on_attach(client)
 
   -- Mappings.
-  local opts = { noremap=true, silent=true }
+  local opts = { noremap = true, silent = true }
 
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
@@ -39,41 +39,42 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
   buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
   buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
   buf_set_keymap('n', '<space>cc', ':cclose<CR>', opts)
   buf_set_keymap('n', '<leader>r', ':LspRestart<CR>', opts)
 end
 
 function goimports(timeout_ms)
-    local context = { only = { "source.organizeImports" } }
-    vim.validate { context = { context, "t", true } }
-    
-    local params = vim.lsp.util.make_range_params()
-    params.context = context
-    
-    -- See the implementation of the textDocument/codeAction callback
-    -- (lua/vim/lsp/handler.lua) for how to do this properly.
-    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout_ms)
-    if not result or next(result) == nil then return end
-    local actions = result[1].result
-    if not actions then return end
-    local action = actions[1]
-    
-    -- textDocument/codeAction can return either Command[] or CodeAction[]. If it
-    -- is a CodeAction, it can have either an edit, a command or both. Edits
-    -- should be executed first.
-    if action.edit or type(action.command) == "table" then
-      if action.edit then
-        vim.lsp.util.apply_workspace_edit(action.edit)
-      end
-      if type(action.command) == "table" then
-        vim.lsp.buf.execute_command(action.command)
-      end
-    else
-      vim.lsp.buf.execute_command(action)
+  local context = { only = { "source.organizeImports" } }
+  vim.validate { context = { context, "t", true } }
+
+  local params = vim.lsp.util.make_range_params()
+  params.context = context
+
+  -- See the implementation of the textDocument/codeAction callback
+  -- (lua/vim/lsp/handler.lua) for how to do this properly.
+  local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout_ms)
+  if not result or next(result) == nil then return end
+  local actions = result[1].result
+  if not actions then return end
+  local action = actions[1]
+
+  -- textDocument/codeAction can return either Command[] or CodeAction[]. If it
+  -- is a CodeAction, it can have either an edit, a command or both. Edits
+  -- should be executed first.
+  if action.edit or type(action.command) == "table" then
+    if action.edit then
+      vim.lsp.util.apply_workspace_edit(action.edit)
     end
+    if type(action.command) == "table" then
+      vim.lsp.buf.execute_command(action.command)
+    end
+  else
+    vim.lsp.buf.execute_command(action)
+  end
 end
+
 -- Autocompletion
 
 -- Add additional capabilities supported by nvim-cmp
@@ -81,53 +82,54 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-local servers = { 
-	'tsserver',
-	'gopls',
-	'emmet_ls',
-	'html',
-	'vuels',
-	'intelephense',
-	'eslint',
-	'jsonls',
-	-- 'golangci_lint_ls',
-	'cssls',
-	'bashls',
-	'sqlls',
-	'astro',
-	'ruby_lsp',
-  'lua_ls'
+local servers = {
+  'ts_ls',
+  'gopls',
+  'emmet_ls',
+  'html',
+  'vuels',
+  'intelephense',
+  'eslint',
+  'jsonls',
+  -- 'golangci_lint_ls',
+  'cssls',
+  'bashls',
+  'sqlls',
+  'astro',
+  'ruby_lsp',
+  'lua_ls',
+  -- 'dartls'
 }
 for _, lsp in ipairs(servers) do
-	if lsp == "" then
-		nvim_lsp[lsp].setup {
-			 cmd = {"gopls", "serve"},
-			 on_attach = on_attach,
-			 capabilities = capabilities,
-			 flags = {
-				debounce_text_changes = 150,
-			 },
-			 provideFormatter = true,
-			 settings = {
-			  gopls = {
-				analyses = {
-				  unusedparams = true,
-				},
-				env = {GOFLAGS="-tags=wireinject"},
-				buildFlags =  {"-tags=wireinject"},
-				staticcheck = true,
-			  },
-			},
-			init_options = {
-				buildFlags =  {"wireinject"},
-  			}
-		}
+  if lsp == "" then
+    nvim_lsp[lsp].setup {
+      cmd = { "gopls", "serve" },
+      on_attach = on_attach,
+      capabilities = capabilities,
+      flags = {
+        debounce_text_changes = 150,
+      },
+      provideFormatter = true,
+      settings = {
+        gopls = {
+          analyses = {
+            unusedparams = true,
+          },
+          env = { GOFLAGS = "-tags=wireinject" },
+          buildFlags = { "-tags=wireinject" },
+          staticcheck = true,
+        },
+      },
+      init_options = {
+        buildFlags = { "wireinject" },
+      }
+    }
   elseif lsp == 'lua_ls' then
     nvim_lsp[lsp].setup {
       on_attach = on_attach,
       on_init = function(client)
         local path = client.workspace_folders[1].name
-        if vim.loop.fs_stat(path..'/.luarc.json') or vim.loop.fs_stat(path..'/.luarc.jsonc') then
+        if vim.loop.fs_stat(path .. '/.luarc.json') or vim.loop.fs_stat(path .. '/.luarc.jsonc') then
           return
         end
 
@@ -155,27 +157,37 @@ for _, lsp in ipairs(servers) do
         Lua = {}
       }
     }
-	elseif lsp == 'cssls' then
-		capabilities.textDocument.completion.completionItem.snippetSupport = true
+  elseif lsp == 'cssls' then
+    capabilities.textDocument.completion.completionItem.snippetSupport = true
 
-		nvim_lsp[lsp].setup {
-		 on_attach = on_attach,
-		 capabilities = capabilities,
-		 flags = {
-			debounce_text_changes = 150,
-		 },
-		 provideformatter = true
-		}
-	else
-		nvim_lsp[lsp].setup {
-		 on_attach = on_attach,
-		 capabilities = capabilities,
-		 flags = {
-			debounce_text_changes = 150,
-		 },
-		 provideformatter = true
-		}
-	end
+    nvim_lsp[lsp].setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+      flags = {
+        debounce_text_changes = 150,
+      },
+      provideformatter = true
+    }
+  elseif lsp == 'ruby_lsp' then
+    nvim_lsp[lsp].setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+      filetypes = { "ruby", "Fastline" },
+      flags = {
+        debounce_text_changes = 150,
+      },
+      provideformatter = true
+    }
+  else
+    nvim_lsp[lsp].setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+      flags = {
+        debounce_text_changes = 150,
+      },
+      provideformatter = true
+    }
+  end
 end
 
 -- Set completeopt to have a better completion experience
@@ -190,8 +202,13 @@ cmp.setup {
   snippet = {
     expand = function(args)
       -- require('luasnip').lsp_expand(args.body)
-	  vim.fn["vsnip#anonymous"](args.body)
+      -- vim.fn["vsnip#anonymous"](args.body)
+      require('luasnip').lsp_expand(args.body)
     end,
+  },
+  window = {
+    completion = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered(),
   },
   mapping = {
     ['<C-p>'] = cmp.mapping.select_prev_item(),
@@ -219,14 +236,16 @@ cmp.setup {
       end
     end,
   },
-  sources = {
+  sources = cmp.config.sources({
     { name = 'nvim_lsp' },
-    -- { name = 'luasnip' },
-	{ name = 'vsnip' },
-	{ name = 'orgmode' }
-  },
+    { name = 'luasnip' },
+    -- { name = 'vsnip' },
+    { name = 'orgmode' }
+  }, {
+    { name = 'buffer' },
+  }),
   formatting = {
-    format = lspkind.cmp_format({with_text = false, maxwidth = 50})
+    format = lspkind.cmp_format({ with_text = false, maxwidth = 50 })
   }
 }
 
@@ -254,7 +273,7 @@ cmp.event:on(
 -- add a lisp filetype (wrap my-function), FYI: Hardcoded = { "clojure", "clojurescript", "fennel", "janet" }
 -- cmp_autopairs.lisp[#cmp_autopairs.lisp+1] = "racket"
 
-require("flutter-tools").setup{
+require("flutter-tools").setup {
   widget_guides = {
     enabled = true,
   },
@@ -275,7 +294,15 @@ require("flutter-tools").setup{
       virtual_text_str = "■", -- the virtual text character to highlight
     },
     on_attach = on_attach,
-    capabilities = capabilities -- e.g. lsp_status capabilities
+    capabilities = capabilities, -- e.g. lsp_status capabilities
+    settings = {
+      showTodos = true,
+      completeFunctionCalls = true,
+      analysisExcludedFolders = {},
+      renameFilesWithClasses = "always",
+      enableSnippets = true,
+      updateImportsOnRename = true, -- Whether to update imports and other directives when files are renamed. Required for `FlutterRename` command
+    }
   },
   decorations = {
     statusline = {

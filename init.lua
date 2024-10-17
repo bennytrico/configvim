@@ -1,8 +1,7 @@
 require("config.lazy")
 vim.cmd('source ~/.config/nvim/old_init.vim')
 
-require("which-key").setup {
-}
+require("which-key").setup {}
 
 require('move').setup({
   line = {
@@ -66,8 +65,9 @@ vim.cmd [[
   autocmd BufWritePre *.jsx lua vim.lsp.buf.format()
   autocmd BufWritePre *.json lua vim.lsp.buf.format()
   autocmd BufWritePre *.dart lua vim.lsp.buf.format()
-  autocmd BufWritePre *.sql lua vim.lsp.buf.format()
+  " autocmd BufWritePre *.sql lua vim.lsp.buf.format()
   autocmd BufWritePre *.lua lua vim.lsp.buf.format()
+  autocmd BufWritePre *.sql lua vim.lsp.buf.format()
   autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js,*.astro EslintFixAll
 
 	autocmd BufReadPost,BufNewFile *.vue setlocal filetype=vue
@@ -319,3 +319,15 @@ require("actions-preview").setup {
 
 require('buffer-line')
 require('keymaps')
+require('rest-nvim').setup({
+  -- rocks = {
+  --   hererocks = true, -- This tells it to use hererocks to install the correct Lua version
+  -- },
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "json" },
+  callback = function()
+    vim.api.nvim_set_option_value("formatprg", "jq", { scope = 'local' })
+  end,
+})

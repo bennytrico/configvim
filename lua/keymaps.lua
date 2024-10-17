@@ -2,6 +2,13 @@ local opts = { noremap = true, silent = true }
 
 -- vim.api.nvim_set_keymap("v", "<leader>y", '"*y', opts)
 -- vim.api.nvim_set_keymap({ "n", "v" }, "<leader>p", "+*p", opts)
+vim.api.nvim_set_keymap("n", "<leader>hl", ":nohl<CR>", opts)
+
+
+-- REST
+require("telescope").load_extension("rest")
+vim.api.nvim_set_keymap("n", "<space>hr", ":Rest open<CR>", opts)
+vim.api.nvim_set_keymap("n", "<space>trr", ":Telescope rest select_env<CR>", opts)
 
 -- Move
 vim.api.nvim_set_keymap("n", "∆", ":MoveLine(1)<CR>", opts)
@@ -30,8 +37,19 @@ vim.keymap.set('i', '<C-j>', function() return vim.fn['codeium#CycleCompletions'
 vim.keymap.set('i', '<C-k>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
 vim.keymap.set('i', '<C-x>', function() return vim.fn['codeium#Clear']() end, { expr = true })
 
+
+local layoutWidthTelescope = .9
+
 -- Telescope
 vim.api.nvim_set_keymap("n", "<C-p>",
-  ":lua require('telescope.builtin').find_files(require('telescope.themes').get_dropdown({winblend = 1}))<CR>", opts)
+  ":lua require('telescope.builtin').find_files(require('telescope.themes').get_dropdown({winblend = 1, layout_config = {width= " ..
+  layoutWidthTelescope .. "}} ))<CR>",
+  opts)
 vim.api.nvim_set_keymap("n", "<C-f>",
-  ":lua require('telescope.builtin').live_grep(require('telescope.themes').get_dropdown({winblend = 1}))<CR>", opts)
+  ":lua require('telescope.builtin').live_grep(require('telescope.themes').get_dropdown({winblend = 1, layout_config = {width= " ..
+  layoutWidthTelescope .. "}}))<CR>", opts)
+vim.api.nvim_set_keymap("n", "<space>b",
+  ":lua require('telescope.builtin').lsp_document_symbols(require('telescope.themes').get_dropdown({ layout_config = {width= " ..
+  layoutWidthTelescope .. "},symbol_width = 100, symbols={'function', 'func', 'struct', 'interface', 'method'} }))<CR>",
+  opts)
+-- vim.api.nvim_set_keymap("n", "<C-l", ":lua require('telescope.builtin').lsp_document_symbols()", opts)

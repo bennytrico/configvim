@@ -33,27 +33,27 @@ function M.setup()
     },
   }
 
-  whichkey.register(keymap, {
-    mode = "n",
-    prefix = "<leader>",
-    buffer = nil,
-    silent = true,
-    noremap = true,
-    nowait = false,
-  })
-
-  local keymap_v = {
-    name = "Debug",
-    e = { "<cmd>lua require'dapui'.eval()<cr>", "Evaluate" },
-  }
-  whichkey.register(keymap_v, {
-    mode = "v",
-    prefix = "<leader>",
-    buffer = nil,
-    silent = true,
-    noremap = true,
-    nowait = false,
-  })
+  -- whichkey.register(keymap, {
+  --   mode = "n",
+  --   prefix = "<leader>",
+  --   buffer = nil,
+  --   silent = true,
+  --   noremap = true,
+  --   nowait = false,
+  -- })
+  --
+  -- local keymap_v = {
+  --   name = "Debug",
+  --   e = { "<cmd>lua require'dapui'.eval()<cr>", "Evaluate" },
+  -- }
+  -- whichkey.register(keymap_v, {
+  --   mode = "v",
+  --   prefix = "<leader>",
+  --   buffer = nil,
+  --   silent = true,
+  --   noremap = true,
+  --   nowait = false,
+  -- })
 end
 
 return M

@@ -1,8 +1,7 @@
 " set clipboard=unnamedplus
+set nolist
 
 set completeopt=menu,menuone,noselect
-
-let leader = exists('g:mapleader') ? g:mapleader : '\'
 
 function! s:check_back_space() abort
   let col = col('.') - 1
@@ -18,7 +17,7 @@ nmap <leader>gk :diffget //3<CR>
 nmap <leader>gj :diffget //2<CR>
 
 " remove highlight
-nmap <leader>h :nohl<CR>
+" nmap <leader>h :nohl<CR>
 
 " If you have vim >=8.0 or Neovim >= 0.1.5
 if (has("termguicolors"))
@@ -58,7 +57,7 @@ colorscheme codedark
 " colorscheme abscs
 
 set cursorline
-highlight CursorLine gui=underline cterm=underline ctermfg=None guifg=None
+" highlight CursorLine gui=underline cterm=underline ctermfg=None guifg=None
 augroup CursorLine
   au!
   au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
