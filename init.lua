@@ -56,8 +56,9 @@ require("lsp-colors").setup({
 require('indent_blank_line_own')
 
 vim.cmd [[
-  autocmd BufWritePre *.go :silent! lua vim.lsp.buf.format()
-  autocmd BufWritePre *.go :silent! lua goimports(3000)
+  " autocmd BufWritePre *.go :silent! lua goimports(3000)
+  " autocmd BufWritePre *.go :silent! lua vim.lsp.buf.format()
+  " autocmd BufWritePre *.go :silent! lua vim.lsp.buf.code_action({ context = { only = { "source.organizeImports" } }, apply = true })
   autocmd BufWritePre *.ts lua vim.lsp.buf.format()
   autocmd BufWritePre *.astro lua vim.lsp.buf.format()
   autocmd BufWritePre *.tsx lua vim.lsp.buf.format()
@@ -68,7 +69,9 @@ vim.cmd [[
   " autocmd BufWritePre *.sql lua vim.lsp.buf.format()
   autocmd BufWritePre *.lua lua vim.lsp.buf.format()
   autocmd BufWritePre *.sql lua vim.lsp.buf.format()
+  autocmd BufWritePre *.rs lua vim.lsp.buf.format()
   autocmd BufWritePre *.tsx,*.ts,*.jsx,*.js,*.astro EslintFixAll
+
 
 	autocmd BufReadPost,BufNewFile *.vue setlocal filetype=vue
 	autocmd FileType dart setlocal ts=2 sw=2 expandtab
@@ -79,7 +82,34 @@ vim.cmd [[
 	autocmd FileType json setlocal ts=2 sw=2 expandtab
 	autocmd FileType css setlocal ts=2 sw=2 expandtab
 	autocmd FileType lua setlocal ts=2 sw=2 expandtab
+
 ]]
+
+local function go_fmt_and_organize_imports()
+  local params = vim.lsp.util.make_range_params()
+  params.context = { only = { "source.organizeImports" } }
+
+  -- Run organize imports first
+  local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 1000)
+  for _, res in pairs(result or {}) do
+    for _, r in pairs(res.result or {}) do
+      if r.edit then
+        vim.lsp.util.apply_workspace_edit(r.edit, "utf-8")
+      else
+        vim.lsp.buf.execute_command(r.command)
+      end
+    end
+  end
+
+  -- Then run format
+  vim.lsp.buf.format()
+end
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.go",
+  callback = go_fmt_and_organize_imports,
+})
+
 
 -- autocmd BufWritePre *.go lua goimports(1000)
 require("todo-comments").setup {}

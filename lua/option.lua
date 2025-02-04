@@ -42,3 +42,5 @@ vim.g.glow_binary_path = vim.env.HOME .. "/bin"
 --     ["python"] = true,
 -- 	["dart"] = true,
 --   }
+
+vim.opt.laststatus = 3

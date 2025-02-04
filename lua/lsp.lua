@@ -2,6 +2,12 @@ local nvim_lsp = require('lspconfig')
 local lsp_status = require('lsp-status')
 local lspkind = require('lspkind')
 
+lspkind.init({
+  symbol_map = {
+    Supermaven = "",
+  },
+})
+
 lsp_status.config({
   kind_labels = vim.g.completion_customize_lsp_label
 })
@@ -91,13 +97,14 @@ local servers = {
   'intelephense',
   'eslint',
   'jsonls',
-  -- 'golangci_lint_ls',
+  'golangci_lint_ls',
   'cssls',
   'bashls',
   'sqlls',
   'astro',
   'ruby_lsp',
   'lua_ls',
+  'rust_analyzer',
   -- 'dartls'
 }
 for _, lsp in ipairs(servers) do
@@ -178,6 +185,29 @@ for _, lsp in ipairs(servers) do
       },
       provideformatter = true
     }
+  elseif lsp == 'rust_analyzer' then
+    nvim_lsp[lsp].setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+      settings = {
+        ["rust-analyzer"] = {
+          imports = {
+            granularity = {
+              group = "module",
+            },
+            prefix = "self",
+          },
+          cargo = {
+            buildScripts = {
+              enable = true,
+            },
+          },
+          procMacro = {
+            enable = true
+          },
+        }
+      }
+    }
   else
     nvim_lsp[lsp].setup {
       on_attach = on_attach,
@@ -240,12 +270,17 @@ cmp.setup {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
     -- { name = 'vsnip' },
-    { name = 'orgmode' }
+    { name = 'orgmode' },
+    { name = 'supermaven' }
   }, {
     { name = 'buffer' },
   }),
   formatting = {
-    format = lspkind.cmp_format({ with_text = false, maxwidth = 50 })
+    format = lspkind.cmp_format({
+      with_text = false,
+      maxwidth = 50,
+      -- symbol_map = { Supermaven = "" }
+    })
   }
 }
 
